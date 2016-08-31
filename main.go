@@ -41,13 +41,33 @@ func (s Stats) Add(cs *github.ContributorStats) {
 func (s Stats) Print() {
 	for name, stat := range s.stats {
 		fmt.Printf(
-			"%s,%d,%d,%d,\n",
+			"%s,%d,%d,%d\n",
 			name,
 			stat.Commits,
 			stat.Additions,
 			stat.Deletions,
 		)
 	}
+}
+
+func (s Stats) PrintHighlights() {
+	commits := ""
+	adds := ""
+	dels := ""
+	for name, stat := range s.stats {
+		if stat.Commits > s.stats[commits].Commits {
+			commits = name
+		}
+		if stat.Additions > s.stats[adds].Additions {
+			adds = name
+		}
+		if stat.Deletions > s.stats[dels].Deletions {
+			dels = name
+		}
+	}
+	fmt.Printf("Biggest amount of commits: %s: %d\n", commits, s.stats[commits].Commits)
+	fmt.Printf("Biggest amount of lines added: %s: %d\n", adds, s.stats[adds].Additions)
+	fmt.Printf("Biggest amount of lines removed: %s: %d\n", dels, s.stats[dels].Deletions)
 }
 
 func repos(org string, client *github.Client) ([]*github.Repository, error) {
@@ -103,5 +123,5 @@ func main() {
 			allStats.Add(cs)
 		}
 	}
-	allStats.Print()
+	allStats.PrintHighlights()
 }
