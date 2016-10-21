@@ -6,8 +6,10 @@ import (
 	"os"
 	"time"
 
+	"github.com/briandowns/spinner"
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
+	"gopkg.in/kyokomi/emoji.v1"
 )
 
 type Stat struct {
@@ -65,9 +67,21 @@ func (s Stats) PrintHighlights() {
 			dels = name
 		}
 	}
-	fmt.Printf("Biggest amount of commits: %s: %d\n", commits, s.stats[commits].Commits)
-	fmt.Printf("Biggest amount of lines added: %s: %d\n", adds, s.stats[adds].Additions)
-	fmt.Printf("Biggest amount of lines removed: %s: %d\n", dels, s.stats[dels].Deletions)
+	emoji.Printf(
+		":trophy: Commit Champion is %s with %d commits!\n",
+		commits,
+		s.stats[commits].Commits,
+	)
+	emoji.Printf(
+		":trophy: Lines Added Champion is %s with %d lines added!\n",
+		adds,
+		s.stats[adds].Additions,
+	)
+	emoji.Printf(
+		":trophy: Housekeeper Champion is %s with %d lines removed!\n",
+		dels,
+		s.stats[dels].Deletions,
+	)
 }
 
 func repos(org string, client *github.Client) ([]*github.Repository, error) {
@@ -91,15 +105,13 @@ func repos(org string, client *github.Client) ([]*github.Repository, error) {
 }
 
 func getStats(org, repo string, client *github.Client) []*github.ContributorStats {
-	log.Println("Gathering " + org + "/" + repo + "...")
-	stats, _, err := client.Repositories.ListContributorsStats(org, repo)
+	stats, res, err := client.Repositories.ListContributorsStats(org, repo)
 	if err != nil {
 		if _, ok := err.(*github.RateLimitError); ok {
-			log.Println("hit rate limit, sleeping for a while...")
 			time.Sleep(time.Duration(15) * time.Second)
 			return getStats(org, repo, client)
 		}
-		log.Fatalln(err, stats)
+		fmt.Println("Got error", res.Status)
 	}
 	return stats
 }
@@ -111,7 +123,9 @@ func main() {
 	tc := oauth2.NewClient(oauth2.NoContext, ts)
 	client := github.NewClient(tc)
 	org := os.Args[1]
-	log.Println("Gathering data for", org)
+	s := spinner.New([]string{"⦾", "⦿"}, 80*time.Millisecond)
+	s.Suffix = " Gathering data for '" + org + "'..."
+	s.Start()
 	allRepos, err := repos(org, client)
 	if err != nil {
 		log.Fatalln(err)
@@ -123,5 +137,7 @@ func main() {
 			allStats.Add(cs)
 		}
 	}
+	fmt.Printf("\n\n\n")
+	s.Stop()
 	allStats.PrintHighlights()
 }

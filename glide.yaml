@@ -4,3 +4,8 @@ import:
   subpackages:
   - github
 - package: golang.org/x/oauth2
+- package: gopkg.in/kyokomi/emoji.v1
+  version: ~1.4.0
+- package: github.com/briandowns/spinner
+  subpackages:
+  - '...'
