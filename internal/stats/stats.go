@@ -1,12 +1,10 @@
 package stats
 
 import (
-	"fmt"
 	"time"
 
-	"golang.org/x/oauth2"
-
 	"github.com/google/go-github/github"
+	"golang.org/x/oauth2"
 )
 
 type Stat struct {
@@ -57,16 +55,18 @@ func repos(org string, client *github.Client) ([]*github.Repository, error) {
 	return allRepos, nil
 }
 
-func getStats(org, repo string, client *github.Client) []*github.ContributorStats {
+func getStats(org, repo string, client *github.Client) ([]*github.ContributorStats, error) {
 	stats, res, err := client.Repositories.ListContributorsStats(org, repo)
 	if err != nil {
 		if _, ok := err.(*github.RateLimitError); ok {
 			time.Sleep(time.Duration(15) * time.Second)
 			return getStats(org, repo, client)
 		}
-		fmt.Println("Got error", res.Status)
+		if res.StatusCode < 200 || res.StatusCode > 300 {
+			return stats, err
+		}
 	}
-	return stats
+	return stats, err
 }
 
 func Gather(token, org string) (Stats, error) {
@@ -83,7 +83,11 @@ func Gather(token, org string) (Stats, error) {
 	}
 
 	for _, repo := range allRepos {
-		for _, cs := range getStats(org, *repo.Name, client) {
+		stats, err := getStats(org, *repo.Name, client)
+		if err != nil {
+			return allStats, err
+		}
+		for _, cs := range stats {
 			allStats.Add(cs)
 		}
 	}
