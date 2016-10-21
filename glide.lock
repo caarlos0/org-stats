@@ -1,12 +1,6 @@
-hash: d211419fdd459f8ab19472875f1c5d3d20b84c4dedfa9edb2662a2dbddd37013
-updated: 2016-10-20T23:00:41.923250803-02:00
+hash: bb4a8d387885aab31d5d95cc90cb028a9281877a288e03e40340fd58de052aba
+updated: 2016-10-20T23:31:00.27496659-02:00
 imports:
-- name: github.com/briandowns/spinner
-  version: a00ac22c746220ee70a0891a0ec4aa6c56c6bb6a
-  subpackages:
-  - '...'
-- name: github.com/fatih/color
-  version: a360acfe359f146180cfc1c6ea6f4397f5c133ec
 - name: github.com/golang/protobuf
   version: df1d3ca07d2d07bba352d5b73c4313b4e2a6203e
   subpackages:
@@ -19,10 +13,12 @@ imports:
   version: 9235644dd9e52eeae6fa48efd539fdc351a0af53
   subpackages:
   - query
-- name: github.com/mattn/go-colorable
-  version: ed8eb9e318d7a84ce5915b495b7d35e0cfe7b5a8
-- name: github.com/mattn/go-isatty
-  version: 66b8e73f3f5cda9f96b69efd03dd3d7fc4a5cdb8
+- name: github.com/kyokomi/emoji
+  version: 17c5e7085c9d59630aa578df67f4469481fbe7a9
+- name: github.com/tj/go-spin
+  version: d9cf5dfd6d7f5b9d1f62122ace69b7fda90f5793
+- name: github.com/urfave/cli
+  version: a14d7d367bc02b1f57d88de97926727f2d936387
 - name: golang.org/x/net
   version: 6d3beaea10370160dea67f5c9327ed791afd5389
   subpackages:
@@ -31,10 +27,6 @@ imports:
   version: 1e695b1c8febf17aad3bfa7bf0a819ef94b98ad5
   subpackages:
   - internal
-- name: golang.org/x/sys
-  version: 8f0908ab3b2457e2e15403d3697c9ef5cb4b57a9
-  subpackages:
-  - unix
 - name: google.golang.org/appengine
   version: 3f4dbbc0ec153a39878fd524ece9f39732bd4998
   subpackages:
@@ -45,6 +37,4 @@ imports:
   - internal/remote_api
   - internal/urlfetch
   - urlfetch
-- name: gopkg.in/kyokomi/emoji.v1
-  version: 17c5e7085c9d59630aa578df67f4469481fbe7a9
 testImports: []
