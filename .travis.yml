@@ -5,7 +5,7 @@ install:
   - glide install
 script:
   - go test -cover `glide nv`
-  - go run main.go getantibody
+  - go run main.go --org getantibody
 after_success:
   test ! -z "$TRAVIS_TAG" && wget -O - https://raw.githubusercontent.com/caarlos0/go-releaser/master/release | bash -s -- -u caarlos0 -r org-stats -b org-stats -m .
 notifications:
