@@ -1,4 +1,4 @@
-# org-stats
+# org-stats [![Build Status](https://travis-ci.org/caarlos0/org-stats.svg?branch=master)](https://travis-ci.org/caarlos0/org-stats)
 
 Get the contributor stats summary from all repos of any given organization
 
