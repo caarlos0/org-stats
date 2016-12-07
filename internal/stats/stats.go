@@ -62,6 +62,7 @@ func getStats(org, repo string, client *github.Client) ([]*github.ContributorSta
 			time.Sleep(time.Duration(15) * time.Second)
 			return getStats(org, repo, client)
 		}
+		println(repo)
 		if res.StatusCode < 200 || res.StatusCode > 300 {
 			return stats, err
 		}
