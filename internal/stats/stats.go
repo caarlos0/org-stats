@@ -58,7 +58,7 @@ func repos(org string, client *github.Client) ([]*github.Repository, error) {
 func getStats(org, repo string, client *github.Client) ([]*github.ContributorStats, error) {
 	stats, res, err := client.Repositories.ListContributorsStats(org, repo)
 	if err != nil {
-		if _, ok := err.(*github.RateLimitError); ok {
+		if _, ok := err.(*github.RateLimitError); ok || res.StatusCode == 202 {
 			time.Sleep(time.Duration(15) * time.Second)
 			return getStats(org, repo, client)
 		}
