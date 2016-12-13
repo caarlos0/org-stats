@@ -56,14 +56,14 @@ func repos(org string, client *github.Client) ([]*github.Repository, error) {
 }
 
 func getStats(org, repo string, client *github.Client) ([]*github.ContributorStats, error) {
-	stats, res, err := client.Repositories.ListContributorsStats(org, repo)
+	stats, _, err := client.Repositories.ListContributorsStats(org, repo)
 	if err != nil {
-		if _, ok := err.(*github.RateLimitError); ok || (res != nil && res.StatusCode == 202) {
+		if _, ok := err.(*github.RateLimitError); ok {
 			time.Sleep(time.Duration(15) * time.Second)
 			return getStats(org, repo, client)
 		}
-		if res.StatusCode < 200 || res.StatusCode > 300 {
-			return stats, err
+		if _, ok := err.(*github.AcceptedError); ok {
+			return getStats(org, repo, client)
 		}
 	}
 	return stats, err
