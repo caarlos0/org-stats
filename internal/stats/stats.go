@@ -19,7 +19,7 @@ func NewStats() Stats {
 	return Stats{make(map[string]Stat)}
 }
 
-func (s Stats) Add(cs *github.ContributorStats) {
+func (s Stats) add(cs *github.ContributorStats) {
 	stat := s.Stats[*cs.Author.Login]
 	var adds int
 	var rms int
@@ -88,7 +88,7 @@ func Gather(token, org string) (Stats, error) {
 			return allStats, err
 		}
 		for _, cs := range stats {
-			allStats.Add(cs)
+			allStats.add(cs)
 		}
 	}
 	return allStats, err
