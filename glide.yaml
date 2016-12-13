@@ -5,8 +5,8 @@ import:
   - github
 - package: github.com/kyokomi/emoji
   version: ^1.4.0
-- package: github.com/tj/go-spin
-  version: ^1.0.0
 - package: github.com/urfave/cli
   version: ^1.18.1
 - package: golang.org/x/oauth2
+- package: github.com/caarlos0/spin
+  version: ^1.0.0

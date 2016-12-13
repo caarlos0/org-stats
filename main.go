@@ -1,13 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"os"
-	"time"
 
 	"github.com/caarlos0/org-stats/internal/stats"
+	"github.com/caarlos0/spin"
 	"github.com/kyokomi/emoji"
-	"github.com/tj/go-spin"
 	"github.com/urfave/cli"
 )
 
@@ -36,25 +34,11 @@ func main() {
 		if token == "" || org == "" {
 			return cli.ShowAppHelp(c)
 		}
-		active := true
-		s := spin.New()
-		s.Set(`⦾⦿`)
-		go func() {
-			for {
-				if !active {
-					return
-				}
-				fmt.Printf(
-					"\r  \033[36m%s Gathering data for '%s'...\033[m",
-					s.Next(),
-					org,
-				)
-				time.Sleep(100 * time.Millisecond)
-			}
-		}()
+		s := spin.New("  \033[36m%s Gathering data for '" + org + "'...\033[m")
+		s.Set(spin.Spin10)
+		s.Start()
 		allStats, err := stats.Gather(token, org)
-		active = false
-		fmt.Printf("\r")
+		s.Stop()
 		if err != nil {
 			return err
 		}

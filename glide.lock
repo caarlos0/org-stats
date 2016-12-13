@@ -1,6 +1,8 @@
-hash: bb4a8d387885aab31d5d95cc90cb028a9281877a288e03e40340fd58de052aba
-updated: 2016-10-20T23:31:00.27496659-02:00
+hash: bb57acc7f887dcb16029c3d6d1df93282b329901750a81c02ed04e10b8b471f2
+updated: 2016-12-13T09:45:50.005740322-02:00
 imports:
+- name: github.com/caarlos0/spin
+  version: f1f63cceace559408b09577f25210edb9b2215c3
 - name: github.com/golang/protobuf
   version: df1d3ca07d2d07bba352d5b73c4313b4e2a6203e
   subpackages:
@@ -14,11 +16,9 @@ imports:
   subpackages:
   - query
 - name: github.com/kyokomi/emoji
-  version: 17c5e7085c9d59630aa578df67f4469481fbe7a9
-- name: github.com/tj/go-spin
-  version: d9cf5dfd6d7f5b9d1f62122ace69b7fda90f5793
+  version: 7e06b236c489543f53868841f188a294e3383eab
 - name: github.com/urfave/cli
-  version: a14d7d367bc02b1f57d88de97926727f2d936387
+  version: 0bdeddeeb0f650497d603c4ad7b20cfe685682f6
 - name: golang.org/x/net
   version: 6d3beaea10370160dea67f5c9327ed791afd5389
   subpackages:
