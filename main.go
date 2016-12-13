@@ -49,31 +49,23 @@ func main() {
 }
 
 func printHighlights(s stats.Stats) {
-	var commits, adds, dels string
-	for name, stat := range s.Stats {
-		if stat.Commits > s.Stats[commits].Commits {
-			commits = name
-		}
-		if stat.Additions > s.Stats[adds].Additions {
-			adds = name
-		}
-		if stat.Deletions > s.Stats[dels].Deletions {
-			dels = name
-		}
-	}
+	commits := stats.Sort(s, stats.ExtractCommits)
+	adds := stats.Sort(s, stats.ExtractAdditions)
+	dels := stats.Sort(s, stats.ExtractDeletions)
+
 	emoji.Printf(
 		":trophy: Commit Champion is %s with %d commits!\n",
-		commits,
-		s.Stats[commits].Commits,
+		commits[0].Key,
+		commits[0].Value,
 	)
 	emoji.Printf(
 		":trophy: Lines Added Champion is %s with %d lines added!\n",
-		adds,
-		s.Stats[adds].Additions,
+		adds[0].Key,
+		adds[0].Value,
 	)
 	emoji.Printf(
 		":trophy: Housekeeper Champion is %s with %d lines removed!\n",
-		dels,
-		s.Stats[dels].Deletions,
+		dels[0].Key,
+		dels[0].Value,
 	)
 }
