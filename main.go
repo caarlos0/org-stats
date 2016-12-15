@@ -1,11 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/caarlos0/org-stats/internal/stats"
 	"github.com/caarlos0/spin"
-	"github.com/kyokomi/emoji"
 	"github.com/urfave/cli"
 )
 
@@ -49,23 +49,37 @@ func main() {
 }
 
 func printHighlights(s stats.Stats) {
-	commits := stats.Sort(s, stats.ExtractCommits)
-	adds := stats.Sort(s, stats.ExtractAdditions)
-	dels := stats.Sort(s, stats.ExtractDeletions)
-
-	emoji.Printf(
-		":trophy: Commit Champion is %s with %d commits!\n",
-		commits[0].Key,
-		commits[0].Value,
-	)
-	emoji.Printf(
-		":trophy: Lines Added Champion is %s with %d lines added!\n",
-		adds[0].Key,
-		adds[0].Value,
-	)
-	emoji.Printf(
-		":trophy: Housekeeper Champion is %s with %d lines removed!\n",
-		dels[0].Key,
-		dels[0].Value,
-	)
+	data := []struct {
+		stats  []stats.StatPair
+		trophy string
+		kind   string
+	}{
+		{
+			stats:  stats.Sort(s, stats.ExtractCommits),
+			trophy: "Commit",
+			kind:   "commits",
+		}, {
+			stats:  stats.Sort(s, stats.ExtractAdditions),
+			trophy: "Lines Added",
+			kind:   "lines added",
+		}, {
+			stats:  stats.Sort(s, stats.ExtractDeletions),
+			trophy: "Housekeeper",
+			kind:   "lines removed",
+		},
+	}
+	var emojis = []string{"\U0001f3c6", "\U0001f3c5", "\U0001f4b0"}
+	for _, d := range data {
+		fmt.Printf("\033[1m%s Champions are:\033[0m\n", d.trophy)
+		for i := 0; i < 3; i++ {
+			fmt.Printf(
+				"%s %s with %d %s!\n",
+				emojis[i],
+				d.stats[i].Key,
+				d.stats[i].Value,
+				d.kind,
+			)
+		}
+		fmt.Printf("\n")
+	}
 }
