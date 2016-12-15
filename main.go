@@ -68,9 +68,9 @@ func printHighlights(s stats.Stats) {
 			kind:   "lines removed",
 		},
 	}
-	var emojis = []string{"\U0001f3c6", "\U0001f3c5", "\U0001f4b0"}
+	var emojis = []string{"\U0001f3c6", "\U0001f948", "\U0001f949"}
 	for _, d := range data {
-		fmt.Printf("\033[1m%s Champions are:\033[0m\n", d.trophy)
+		fmt.Printf("\033[1m%s champions are:\033[0m\n", d.trophy)
 		for i := 0; i < 3; i++ {
 			fmt.Printf(
 				"%s %s with %d %s!\n",
