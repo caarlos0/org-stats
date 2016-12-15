@@ -30,9 +30,12 @@ func main() {
 	}
 	app.Action = func(c *cli.Context) error {
 		token := c.String("token")
+		if token == "" {
+			return cli.NewExitError("Missing GitHub API token", 1)
+		}
 		org := c.String("org")
-		if token == "" || org == "" {
-			return cli.ShowAppHelp(c)
+		if org == "" {
+			return cli.NewExitError("Missing organization name", 1)
 		}
 		s := spin.New("  \033[36m%s Gathering data for '" + org + "'...\033[m")
 		s.Set(spin.Spin10)
@@ -40,7 +43,7 @@ func main() {
 		allStats, err := stats.Gather(token, org)
 		s.Stop()
 		if err != nil {
-			return err
+			return cli.NewExitError(err.Error(), 1)
 		}
 		printHighlights(allStats)
 		return nil
