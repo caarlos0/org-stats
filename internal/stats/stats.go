@@ -20,6 +20,9 @@ func NewStats() Stats {
 }
 
 func (s Stats) add(cs *github.ContributorStats) {
+	if cs.Author == nil {
+		return
+	}
 	stat := s.Stats[*cs.Author.Login]
 	var adds int
 	var rms int
