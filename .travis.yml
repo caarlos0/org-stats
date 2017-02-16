@@ -7,6 +7,8 @@ script:
   - go test -cover `glide nv`
   - go run main.go --org getantibody
 after_success:
-  test -n "$TRAVIS_TAG" && curl -s https://raw.githubusercontent.com/goreleaser/get/master/latest | bash
+  - go get github.com/goreleaser/goreleaser
+  - gem install fpm
+  - test -n "$TRAVIS_TAG" && goreleaser
 notifications:
   email: false
