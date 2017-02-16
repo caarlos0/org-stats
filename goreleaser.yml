@@ -1,3 +1,6 @@
 brew:
   repo: caarlos0/homebrew-tap
   folder: Formula
+fpm:
+  formats:
+    - deb
