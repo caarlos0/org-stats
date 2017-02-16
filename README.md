@@ -7,5 +7,5 @@ Get the contributor stats summary from all repos of any given organization
 ## Install
 
 ```console
-brew tap caarlos0/tap/org-stats
+brew install caarlos0/tap/org-stats
 ```
