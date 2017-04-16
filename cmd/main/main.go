@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/caarlos0/org-stats/internal/stats"
+	orgstats "github.com/caarlos0/org-stats"
 	"github.com/caarlos0/spin"
 	"github.com/urfave/cli"
 )
@@ -29,19 +29,18 @@ func main() {
 		},
 	}
 	app.Action = func(c *cli.Context) error {
-		token := c.String("token")
+		var token = c.String("token")
+		var org = c.String("org")
 		if token == "" {
-			return cli.NewExitError("Missing GitHub API token", 1)
+			return cli.NewExitError("missing github api token", 1)
 		}
-		org := c.String("org")
 		if org == "" {
-			return cli.NewExitError("Missing organization name", 1)
+			return cli.NewExitError("missing organization name", 1)
 		}
-		s := spin.New("  \033[36m%s Gathering data for '" + org + "'...\033[m")
-		s.Set(spin.Spin10)
-		s.Start()
-		allStats, err := stats.Gather(token, org)
-		s.Stop()
+		var spin = spin.New("  \033[36m%s Gathering data for '" + org + "'...\033[m")
+		spin.Start()
+		allStats, err := orgstats.Gather(token, org)
+		spin.Stop()
 		if err != nil {
 			return cli.NewExitError(err.Error(), 1)
 		}
@@ -51,22 +50,22 @@ func main() {
 	app.Run(os.Args)
 }
 
-func printHighlights(s stats.Stats) {
+func printHighlights(s orgstats.Stats) {
 	data := []struct {
-		stats  []stats.StatPair
+		stats  []orgstats.StatPair
 		trophy string
 		kind   string
 	}{
 		{
-			stats:  stats.Sort(s, stats.ExtractCommits),
+			stats:  orgstats.Sort(s, orgstats.ExtractCommits),
 			trophy: "Commit",
 			kind:   "commits",
 		}, {
-			stats:  stats.Sort(s, stats.ExtractAdditions),
+			stats:  orgstats.Sort(s, orgstats.ExtractAdditions),
 			trophy: "Lines Added",
 			kind:   "lines added",
 		}, {
-			stats:  stats.Sort(s, stats.ExtractDeletions),
+			stats:  orgstats.Sort(s, orgstats.ExtractDeletions),
 			trophy: "Housekeeper",
 			kind:   "lines removed",
 		},

@@ -1,4 +1,13 @@
-# org-stats [![Build Status](https://travis-ci.org/caarlos0/org-stats.svg?branch=master)](https://travis-ci.org/caarlos0/org-stats) [![Powered By: GoReleaser](https://img.shields.io/badge/powered%20by-goreleaser-green.svg?style=flat-square)](https://github.com/goreleaser) [![SayThanks.io](https://img.shields.io/badge/SayThanks.io-%E2%98%BC-1EAEDB.svg?style=flat-square)](https://saythanks.io/to/caarlos0)
+# org-stats
+
+[![Release](https://img.shields.io/github/release/caarlos0/org-stats.svg?style=flat-square)](https://github.com/caarlos0/org-stats/releases/latest)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![Travis](https://img.shields.io/travis/caarlos0/org-stats.svg?style=flat-square)](https://travis-ci.org/caarlos0/org-stats)
+[![Go Report Card](https://goreportcard.com/badge/github.com/caarlos0/org-stats?style=flat-square)](https://goreportcard.com/report/github.com/caarlos0/org-stats)
+[![Godoc](https://godoc.org/github.com/caarlos0/org-stats?status.svg&style=flat-square)](http://godoc.org/github.com/caarlos0/org-stats)
+[![SayThanks.io](https://img.shields.io/badge/SayThanks.io-%E2%98%BC-1EAEDB.svg?style=flat-square)](https://saythanks.io/to/caarlos0)
+[![Powered By: GoReleaser](https://img.shields.io/badge/powered%20by-goreleaser-green.svg?style=flat-square)](https://github.com/goreleaser)
+
 
 Get the contributor stats summary from all repos of any given organization
 
