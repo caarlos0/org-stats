@@ -1,45 +1,37 @@
-package stats
+package orgstats
 
 import "sort"
 
+// Extract is a function that converts a multiple stat into a single stat
 type Extract func(st Stat) int
 
+// ExtractCommits extract the commit section of the given stat
 var ExtractCommits = func(st Stat) int {
 	return st.Commits
 }
 
+// ExtractAdditions extract the adds section of the given stat
 var ExtractAdditions = func(st Stat) int {
 	return st.Additions
 }
 
+// ExtractDeletions extract the rms section of the given stat
 var ExtractDeletions = func(st Stat) int {
 	return st.Deletions
 }
 
 func Sort(s Stats, extract Extract) []StatPair {
-	var result statPairList
-	for key, value := range s.Stats {
+	var result []StatPair
+	for key, value := range s {
 		result = append(result, StatPair{Key: key, Value: extract(value)})
 	}
-	sort.Sort(sort.Reverse(result))
+	sort.Slice(result, func(i int, j int) bool {
+		return result[i].Value > result[j].Value
+	})
 	return result
 }
 
 type StatPair struct {
 	Key   string
 	Value int
-}
-
-type statPairList []StatPair
-
-func (b statPairList) Len() int {
-	return len(b)
-}
-
-func (b statPairList) Less(i, j int) bool {
-	return b[i].Value < b[j].Value
-}
-
-func (b statPairList) Swap(i, j int) {
-	b[i], b[j] = b[j], b[i]
 }
