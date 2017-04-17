@@ -47,7 +47,9 @@ func main() {
 		printHighlights(allStats)
 		return nil
 	}
-	app.Run(os.Args)
+	if err := app.Run(os.Args); err != nil {
+		panic(err)
+	}
 }
 
 func printHighlights(s orgstats.Stats) {
