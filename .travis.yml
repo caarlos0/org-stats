@@ -3,7 +3,7 @@ go: 1.8
 install: make setup
 script:
   - make ci
-  - go run ./cmd/org-stats/main.go --org goreleaser
+  - go run main.go --org goreleaser --blacklist get
 after_success:
   - go get github.com/mattn/goveralls
   - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken="$COVERALLS_TOKEN"

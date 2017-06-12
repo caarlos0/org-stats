@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	orgstats "github.com/caarlos0/org-stats"
+	orgstats "github.com/caarlos0/org-stats/orgstats"
 	"github.com/caarlos0/spin"
 	"github.com/urfave/cli"
 )
@@ -24,13 +24,18 @@ func main() {
 			Usage:  "Your GitHub token",
 		},
 		cli.StringFlag{
-			Name:  "org",
-			Usage: "GitHub organization to scan.",
+			Name:  "org, o",
+			Usage: "GitHub organization to scan",
+		},
+		cli.StringSliceFlag{
+			Name:  "blacklist, b",
+			Usage: "Blacklist repos and/or users",
 		},
 	}
 	app.Action = func(c *cli.Context) error {
 		var token = c.String("token")
 		var org = c.String("org")
+		var blacklist = c.StringSlice("blacklist")
 		if token == "" {
 			return cli.NewExitError("missing github api token", 1)
 		}
@@ -39,7 +44,7 @@ func main() {
 		}
 		var spin = spin.New("  \033[36m%s Gathering data for '" + org + "'...\033[m")
 		spin.Start()
-		allStats, err := orgstats.Gather(token, org)
+		allStats, err := orgstats.Gather(token, org, blacklist)
 		spin.Stop()
 		if err != nil {
 			return cli.NewExitError(err.Error(), 1)
@@ -75,7 +80,11 @@ func printHighlights(s orgstats.Stats) {
 	var emojis = []string{"\U0001f3c6", "\U0001f948", "\U0001f949"}
 	for _, d := range data {
 		fmt.Printf("\033[1m%s champions are:\033[0m\n", d.trophy)
-		for i := 0; i < 3; i++ {
+		var j = 3
+		if len(d.stats) < j {
+			j = len(d.stats)
+		}
+		for i := 0; i < j; i++ {
 			fmt.Printf(
 				"%s %s with %d %s!\n",
 				emojis[i],

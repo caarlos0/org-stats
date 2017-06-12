@@ -1,5 +1,3 @@
-build:
-  main: ./cmd/org-stats/main.go
 brew:
   github:
     owner: caarlos0
