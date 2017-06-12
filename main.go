@@ -31,11 +31,17 @@ func main() {
 			Name:  "blacklist, b",
 			Usage: "Blacklist repos and/or users",
 		},
+		cli.IntFlag{
+			Name:  "top",
+			Usage: "How many users to show",
+			Value: 3,
+		},
 	}
 	app.Action = func(c *cli.Context) error {
 		var token = c.String("token")
 		var org = c.String("org")
 		var blacklist = c.StringSlice("blacklist")
+		var top = c.Int("top")
 		if token == "" {
 			return cli.NewExitError("missing github api token", 1)
 		}
@@ -49,7 +55,7 @@ func main() {
 		if err != nil {
 			return cli.NewExitError(err.Error(), 1)
 		}
-		printHighlights(allStats)
+		printHighlights(allStats, top)
 		return nil
 	}
 	if err := app.Run(os.Args); err != nil {
@@ -57,7 +63,7 @@ func main() {
 	}
 }
 
-func printHighlights(s orgstats.Stats) {
+func printHighlights(s orgstats.Stats, top int) {
 	data := []struct {
 		stats  []orgstats.StatPair
 		trophy string
@@ -77,17 +83,16 @@ func printHighlights(s orgstats.Stats) {
 			kind:   "lines removed",
 		},
 	}
-	var emojis = []string{"\U0001f3c6", "\U0001f948", "\U0001f949"}
 	for _, d := range data {
 		fmt.Printf("\033[1m%s champions are:\033[0m\n", d.trophy)
-		var j = 3
+		var j = top
 		if len(d.stats) < j {
 			j = len(d.stats)
 		}
 		for i := 0; i < j; i++ {
 			fmt.Printf(
 				"%s %s with %d %s!\n",
-				emojis[i],
+				emojiForPos(i),
 				d.stats[i].Key,
 				d.stats[i].Value,
 				d.kind,
@@ -95,4 +100,12 @@ func printHighlights(s orgstats.Stats) {
 		}
 		fmt.Printf("\n")
 	}
+}
+
+func emojiForPos(pos int) string {
+	var emojis = []string{"\U0001f3c6", "\U0001f948", "\U0001f949"}
+	if pos < len(emojis) {
+		return emojis[pos]
+	}
+	return " "
 }
