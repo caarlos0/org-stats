@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	orgstats "github.com/caarlos0/org-stats"
+	orgstats "github.com/caarlos0/org-stats/orgstats"
 	"github.com/caarlos0/spin"
 	"github.com/urfave/cli"
 )
