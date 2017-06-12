@@ -2,6 +2,7 @@ package orgstats
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"github.com/google/go-github/github"
@@ -22,7 +23,7 @@ func NewStats() Stats {
 }
 
 // Gather a given organization's stats
-func Gather(token, org string) (Stats, error) {
+func Gather(token, org string, blacklist []string) (Stats, error) {
 	var ctx = context.Background()
 	var ts = oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	var client = github.NewClient(oauth2.NewClient(ctx, ts))
@@ -34,15 +35,30 @@ func Gather(token, org string) (Stats, error) {
 	}
 
 	for _, repo := range allRepos {
+		if isBlacklisted(blacklist, repo.GetName()) {
+			continue
+		}
 		stats, serr := getStats(ctx, client, org, *repo.Name)
 		if serr != nil {
 			return allStats, serr
 		}
 		for _, cs := range stats {
+			if isBlacklisted(blacklist, cs.Author.GetLogin()) {
+				continue
+			}
 			allStats.add(cs)
 		}
 	}
 	return allStats, err
+}
+
+func isBlacklisted(blacklist []string, s string) bool {
+	for _, b := range blacklist {
+		if strings.EqualFold(s, b) {
+			return true
+		}
+	}
+	return false
 }
 
 func (s Stats) add(cs *github.ContributorStats) {
