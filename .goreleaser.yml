@@ -3,6 +3,7 @@ brew:
     owner: caarlos0
     name: homebrew-tap
   folder: Formula
-fpm:
+  description: Get the contributor stats summary from all repos of any given organization
+nfpm:
   formats:
     - deb
