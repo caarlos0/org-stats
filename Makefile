@@ -34,6 +34,6 @@ lint:
 ci: build lint test
 
 build:
-	go build -o org-stats ./cmd/org-stats/main.go
+	go build -o org-stats .
 
 .DEFAULT_GOAL := build
