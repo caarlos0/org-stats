@@ -54,7 +54,7 @@ func main() {
 		}
 		var spin = spin.New("  \033[36m%s Gathering data for '" + org + "'...\033[m")
 		spin.Start()
-		allStats, err := orgstats.Gather(token, org, blacklist)
+		allStats, err := orgstats.Gather(token, org, blacklist, c.String("github-url"))
 		spin.Stop()
 		if err != nil {
 			return cli.NewExitError(err.Error(), 1)
