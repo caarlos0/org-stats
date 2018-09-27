@@ -5,7 +5,7 @@ TEST_OPTIONS?=
 export GO111MODULE := on
 
 setup: ## Install all the build and lint dependencies
-	go get -u github.com/alecthomas/gometalinter
+	curl -sfL https://git.io/vp6lP | sh
 	go mod download
 
 test: ## Run all the tests
