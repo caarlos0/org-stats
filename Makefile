@@ -2,13 +2,11 @@ SOURCE_FILES?=$$(go list ./... | grep -v /vendor/)
 TEST_PATTERN?=.
 TEST_OPTIONS?=
 
+export GO111MODULE := on
+
 setup: ## Install all the build and lint dependencies
 	go get -u github.com/alecthomas/gometalinter
-	go get -u github.com/golang/dep/...
-	go get -u github.com/pierrre/gotestcover
-	go get -u golang.org/x/tools/cmd/cover
-	dep ensure
-	gometalinter --install --update
+	go mod download
 
 test: ## Run all the tests
 	gotestcover $(TEST_OPTIONS) -covermode=count -coverprofile=coverage.out $(SOURCE_FILES) -run $(TEST_PATTERN) -timeout=30s
