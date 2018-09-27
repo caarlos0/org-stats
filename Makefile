@@ -22,13 +22,10 @@ lint:
 	gometalinter --disable-all \
 		--enable=deadcode \
 		--enable=ineffassign \
-		--enable=gosimple \
-		--enable=staticcheck \
 		--enable=gofmt \
 		--enable=goimports \
 		--enable=dupl \
 		--enable=misspell \
-		--enable=errcheck \
 		--enable=vet \
 		--enable=vetshadow \
 		--deadline=10m \
