@@ -36,6 +36,10 @@ func main() {
 			Usage: "How many users to show",
 			Value: 3,
 		},
+		cli.StringFlag{
+			Name:  "github-url",
+			Usage: "Custom GitHub URL (for GitHub Enterprise for example)",
+		},
 	}
 	app.Action = func(c *cli.Context) error {
 		var token = c.String("token")

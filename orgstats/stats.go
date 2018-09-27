@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/google/go-github/github"
-	"golang.org/x/oauth2"
 )
 
 // Stat represents an user adds, rms and commits count
@@ -23,11 +22,13 @@ func NewStats() Stats {
 }
 
 // Gather a given organization's stats
-func Gather(token, org string, blacklist []string) (Stats, error) {
+func Gather(token, org string, blacklist []string, url string) (Stats, error) {
 	var ctx = context.Background()
-	var ts = oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
-	var client = github.NewClient(oauth2.NewClient(ctx, ts))
 	var allStats = NewStats()
+	client, err := newClient(ctx, token, url)
+	if err != nil {
+		return allStats, err
+	}
 
 	allRepos, err := repos(ctx, client, org)
 	if err != nil {
