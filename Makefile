@@ -1,47 +1,39 @@
-SOURCE_FILES?=$$(go list ./... | grep -v /vendor/)
+SOURCE_FILES?=./...
 TEST_PATTERN?=.
 TEST_OPTIONS?=
 
-setup: ## Install all the build and lint dependencies
-	go get -u github.com/alecthomas/gometalinter
-	go get -u github.com/golang/dep/...
-	go get -u github.com/pierrre/gotestcover
-	go get -u golang.org/x/tools/cmd/cover
-	dep ensure
-	gometalinter --install --update
+export GO111MODULE := on
+export GOBIN       := $(PWD)/bin
+export PATH        := $(PWD)/bin:$(PATH)
 
-test: ## Run all the tests
-	gotestcover $(TEST_OPTIONS) -covermode=count -coverprofile=coverage.out $(SOURCE_FILES) -run $(TEST_PATTERN) -timeout=30s
+setup:
+	curl -sfL https://git.io/vp6lP | sh
 
-cover: test ## RUn all the tests and opens the coverage report
+test:
+	go test $(TEST_OPTIONS) -failfast -race -coverpkg=./... -covermode=atomic -coverprofile=coverage.out $(SOURCE_FILES) -run $(TEST_PATTERN)
+
+cover: test
 	go tool cover -html=coverage.out
 
-fmt: ## gofmt and goimports all go files
-	find . -name '*.go' -not -wholename './vendor/*' | while read -r file; do gofmt -w -s "$$file"; goimports -w "$$file"; done
+fmt:
+	find . -name '*.go' | while read -r file; do gofmt -w -s "$$file"; goimports -w "$$file"; done
 
-lint: ## Run all the linters
-	gometalinter --vendor --disable-all \
+lint:
+	gometalinter --disable-all \
 		--enable=deadcode \
 		--enable=ineffassign \
-		--enable=gosimple \
-		--enable=staticcheck \
 		--enable=gofmt \
 		--enable=goimports \
 		--enable=dupl \
 		--enable=misspell \
-		--enable=errcheck \
 		--enable=vet \
 		--enable=vetshadow \
 		--deadline=10m \
 		./...
 
-ci: lint test ## Run all the tests and code checks
+ci: build lint test
 
-build: ## Build a beta version
-	go build -o org-stats ./cmd/org-stats/main.go
-
-# Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
-help:
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+build:
+	go build -o org-stats .
 
 .DEFAULT_GOAL := build

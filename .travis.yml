@@ -1,12 +1,15 @@
 language: go
-go: '1.10.x'
+go: '1.11.x'
 install: make setup
 script:
   - make ci
-  - go run main.go --org goreleaser --blacklist get --top 10
+  - ./org-stats --org goreleaser --blacklist get --top 10
 after_success:
   - go get github.com/mattn/goveralls
   - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken="$COVERALLS_TOKEN"
-  - test -n "$TRAVIS_TAG" && gem install fpm && curl -sL http://git.io/goreleaser | bash
+deploy:
+- provider: script
+  skip_cleanup: true
+  script: curl -sL https://git.io/goreleaser | bash
 notifications:
   email: false
