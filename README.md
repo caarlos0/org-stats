@@ -15,6 +15,14 @@ Get the contributor stats summary from all repos of any given organization
 
 ## Install
 
-```console
+On macOS:
+
+```sh
 brew install caarlos0/tap/org-stats
+```
+
+On Linux:
+
+```sh
+snap install org-stats
 ```

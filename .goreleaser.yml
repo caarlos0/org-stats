@@ -11,3 +11,9 @@ brew:
 nfpm:
   formats:
     - deb
+snapcraft:
+  publish: true
+  summary: Get the contributor stats summary from all repos of any given organization
+  description: |
+    Get the contributor stats summary from all repos of any given organization
+  grade: stable
