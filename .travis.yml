@@ -13,7 +13,7 @@ script:
 after_success:
 - go get github.com/mattn/goveralls
 - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken="$COVERALLS_TOKEN"
-- sudo snap install snapcraft --classic
+- test -n "$TRAVIS_TAG" && sudo snap install snapcraft --classic
 - test -n "$TRAVIS_TAG" && snapcraft login --with snap.login
 deploy:
 - provider: script
