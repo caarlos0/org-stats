@@ -70,11 +70,11 @@ func (s Stats) add(cs *github.ContributorStats, weeks int32) {
 	var adds int
 	var rms int
 	var commits int
-
+	t1 := time.Now()
+	lastWeeksDuration := time.Hour * 24 * 7 * time.Duration(weeks)
 	for _, week := range cs.Weeks {
-		t1 := time.Now()
 		diff := t1.Sub(week.Week.Time)
-		if  weeks == -1 || diff <= (time.Hour * 24 * 7 * time.Duration(weeks) ) {
+		if weeks == -1 || diff <= lastWeeksDuration {
 			adds += *week.Additions
 			rms += *week.Deletions
 			commits += *week.Commits
