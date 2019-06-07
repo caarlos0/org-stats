@@ -36,6 +36,11 @@ func main() {
 			Usage: "How many users to show",
 			Value: 3,
 		},
+		cli.IntFlag{
+			Name:  "weeks",
+			Usage: "How many recent weeks",
+			Value: -1,
+		},
 		cli.StringFlag{
 			Name:  "github-url",
 			Usage: "Custom GitHub URL (for GitHub Enterprise for example)",
@@ -46,6 +51,7 @@ func main() {
 		var org = c.String("org")
 		var blacklist = c.StringSlice("blacklist")
 		var top = c.Int("top")
+		var weeks = c.Int("weeks")
 		if token == "" {
 			return cli.NewExitError("missing github api token", 1)
 		}
@@ -54,7 +60,7 @@ func main() {
 		}
 		var spin = spin.New("  \033[36m%s Gathering data for '" + org + "'...\033[m")
 		spin.Start()
-		allStats, err := orgstats.Gather(token, org, blacklist, c.String("github-url"))
+		allStats, err := orgstats.Gather(token, org, blacklist, c.String("github-url"), int32(weeks))
 		spin.Stop()
 		if err != nil {
 			return cli.NewExitError(err.Error(), 1)

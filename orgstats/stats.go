@@ -2,6 +2,7 @@ package orgstats
 
 import (
 	"context"
+	"math/rand"
 	"strings"
 	"time"
 
@@ -22,7 +23,7 @@ func NewStats() Stats {
 }
 
 // Gather a given organization's stats
-func Gather(token, org string, blacklist []string, url string) (Stats, error) {
+func Gather(token, org string, blacklist []string, url string, weeks int32) (Stats, error) {
 	var ctx = context.Background()
 	var allStats = NewStats()
 	client, err := newClient(ctx, token, url)
@@ -47,7 +48,7 @@ func Gather(token, org string, blacklist []string, url string) (Stats, error) {
 			if isBlacklisted(blacklist, cs.Author.GetLogin()) {
 				continue
 			}
-			allStats.add(cs)
+			allStats.add(cs, weeks)
 		}
 	}
 	return allStats, err
@@ -62,7 +63,7 @@ func isBlacklisted(blacklist []string, s string) bool {
 	return false
 }
 
-func (s Stats) add(cs *github.ContributorStats) {
+func (s Stats) add(cs *github.ContributorStats, weeks int32) {
 	if cs.Author == nil {
 		return
 	}
@@ -70,10 +71,15 @@ func (s Stats) add(cs *github.ContributorStats) {
 	var adds int
 	var rms int
 	var commits int
+
 	for _, week := range cs.Weeks {
-		adds += *week.Additions
-		rms += *week.Deletions
-		commits += *week.Commits
+		t1 := time.Now()
+		diff := t1.Sub(week.Week.Time)
+		if  weeks == -1 || diff <= (time.Hour * 24 * 7 * time.Duration(rand.Int31n(weeks)) ) {
+			adds += *week.Additions
+			rms += *week.Deletions
+			commits += *week.Commits
+		}
 	}
 	stat.Additions += adds
 	stat.Deletions += rms
