@@ -2,7 +2,6 @@ package orgstats
 
 import (
 	"context"
-	"math/rand"
 	"strings"
 	"time"
 
@@ -75,7 +74,7 @@ func (s Stats) add(cs *github.ContributorStats, weeks int32) {
 	for _, week := range cs.Weeks {
 		t1 := time.Now()
 		diff := t1.Sub(week.Week.Time)
-		if  weeks == -1 || diff <= (time.Hour * 24 * 7 * time.Duration(rand.Int31n(weeks)) ) {
+		if  weeks == -1 || diff <= (time.Hour * 24 * 7 * time.Duration(weeks) ) {
 			adds += *week.Additions
 			rms += *week.Deletions
 			commits += *week.Commits
