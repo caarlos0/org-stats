@@ -7,7 +7,7 @@ require (
 	github.com/google/go-github/v28 v28.1.1
 	github.com/google/go-querystring v1.0.0
 	github.com/urfave/cli v1.22.1
-	golang.org/x/net v0.0.0-20190311183353-d8887717615a
+	golang.org/x/net v0.0.0-20191003171128-d98b1b443823
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
 	google.golang.org/appengine v1.4.0
 )
