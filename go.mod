@@ -2,7 +2,7 @@ module github.com/caarlos0/org-stats
 
 require (
 	github.com/caarlos0/spin v1.1.0
-	github.com/golang/protobuf v1.2.0
+	github.com/golang/protobuf v1.3.2
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/go-github/v28 v28.1.1
 	github.com/google/go-querystring v1.0.0
