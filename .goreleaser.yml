@@ -2,17 +2,17 @@ builds:
 - env:
   - CGO_ENABLED=0
   - GO111MODULE=on
-brew:
+brews:
+- folder: Formula
   github:
     owner: caarlos0
     name: homebrew-tap
-  folder: Formula
   description: Get the contributor stats summary from all repos of any given organization
-nfpm:
-  formats:
+nfpms:
+- formats:
     - deb
-snapcraft:
-  publish: true
+snapcrafts:
+- publish: true
   summary: Get the contributor stats summary from all repos of any given organization
   description: |
     Get the contributor stats summary from all repos of any given organization
