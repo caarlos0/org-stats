@@ -42,17 +42,17 @@ func main() {
 		},
 	}
 	app.Action = func(c *cli.Context) error {
-		var token = c.String("token")
-		var org = c.String("org")
-		var blacklist = c.StringSlice("blacklist")
-		var top = c.Int("top")
+		token := c.String("token")
+		org := c.String("org")
+		blacklist := c.StringSlice("blacklist")
+		top := c.Int("top")
 		if token == "" {
 			return cli.NewExitError("missing github api token", 1)
 		}
 		if org == "" {
 			return cli.NewExitError("missing organization name", 1)
 		}
-		var spin = spin.New("  \033[36m%s Gathering data for '" + org + "'...\033[m")
+		spin := spin.New("  \033[36m%s Gathering data for '" + org + "'...\033[m")
 		spin.Start()
 		allStats, err := orgstats.Gather(token, org, blacklist, c.String("github-url"))
 		spin.Stop()
@@ -89,7 +89,7 @@ func printHighlights(s orgstats.Stats, top int) {
 	}
 	for _, d := range data {
 		fmt.Printf("\033[1m%s champions are:\033[0m\n", d.trophy)
-		var j = top
+		j := top
 		if len(d.stats) < j {
 			j = len(d.stats)
 		}
@@ -107,7 +107,7 @@ func printHighlights(s orgstats.Stats, top int) {
 }
 
 func emojiForPos(pos int) string {
-	var emojis = []string{"\U0001f3c6", "\U0001f948", "\U0001f949"}
+	emojis := []string{"\U0001f3c6", "\U0001f948", "\U0001f949"}
 	if pos < len(emojis) {
 		return emojis[pos]
 	}

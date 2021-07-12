@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/go-github/v28/github"
+	"github.com/google/go-github/v37/github"
 )
 
 // Stat represents an user adds, rms and commits count
@@ -23,8 +23,8 @@ func NewStats() Stats {
 
 // Gather a given organization's stats
 func Gather(token, org string, blacklist []string, url string) (Stats, error) {
-	var ctx = context.Background()
-	var allStats = NewStats()
+	ctx := context.Background()
+	allStats := NewStats()
 	client, err := newClient(ctx, token, url)
 	if err != nil {
 		return allStats, err
@@ -82,7 +82,7 @@ func (s Stats) add(cs *github.ContributorStats) {
 }
 
 func repos(ctx context.Context, client *github.Client, org string) ([]*github.Repository, error) {
-	var opt = &github.RepositoryListByOrgOptions{
+	opt := &github.RepositoryListByOrgOptions{
 		ListOptions: github.ListOptions{PerPage: 10},
 	}
 	var allRepos []*github.Repository
