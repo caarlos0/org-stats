@@ -1,19 +1,20 @@
-builds:
-- env:
-  - CGO_ENABLED=0
-  - GO111MODULE=on
-brews:
-- folder: Formula
-  github:
-    owner: caarlos0
-    name: homebrew-tap
+variables:
   description: Get the contributor stats summary from all repos of any given organization
-nfpms:
-- formats:
-    - deb
+  homepage: https://github.com/caarlos0/org-stats
+
+includes:
+  - from_url:
+      url: https://raw.githubusercontent.com/caarlos0/goreleaserfiles/main/build.yml
+  - from_url:
+      url: https://raw.githubusercontent.com/caarlos0/goreleaserfiles/main/package.yml
+  - from_url:
+      url: https://raw.githubusercontent.com/caarlos0/goreleaserfiles/main/release.yml
+
+furies:
+  - account: caarlos0
+
 snapcrafts:
 - publish: true
-  summary: Get the contributor stats summary from all repos of any given organization
-  description: |
-    Get the contributor stats summary from all repos of any given organization
+  summary: '{{ .description }}'
+  description: '{{ .description }}'
   grade: stable
