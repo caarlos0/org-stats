@@ -1,27 +1,48 @@
 # org-stats
 
-[![Release](https://img.shields.io/github/release/caarlos0/org-stats.svg?style=flat-square)](https://github.com/caarlos0/org-stats/releases/latest)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![Travis](https://img.shields.io/travis/caarlos0/org-stats.svg?style=flat-square)](https://travis-ci.org/caarlos0/org-stats)
-[![Go Report Card](https://goreportcard.com/badge/github.com/caarlos0/org-stats?style=flat-square)](https://goreportcard.com/report/github.com/caarlos0/org-stats)
-[![Godoc](https://godoc.org/github.com/caarlos0/org-stats?status.svg&style=flat-square)](http://godoc.org/github.com/caarlos0/org-stats)
-[![Powered By: GoReleaser](https://img.shields.io/badge/powered%20by-goreleaser-green.svg?style=flat-square)](https://github.com/goreleaser)
-
+[![Release](https://img.shields.io/github/release/caarlos0/org-stats.svg?style=for-the-badge)](https://github.com/caarlos0/org-stats/releases/latest)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=for-the-badge)](/LICENSE.md)
+[![Build status](https://img.shields.io/github/workflow/status/caarlos0/org-stats/build?style=for-the-badge)](https://github.com/caarlos0/org-stats/actions?workflow=build)
+[![Codecov branch](https://img.shields.io/codecov/c/github/caarlos0/org-stats/master.svg?style=for-the-badge)](https://codecov.io/gh/caarlos0/org-stats)
+[![Go Doc](https://img.shields.io/badge/godoc-reference-blue.svg?style=for-the-badge)](http://godoc.org/github.com/caarlos0/org-stats)
+[![Powered By: GoReleaser](https://img.shields.io/badge/powered%20by-goreleaser-green.svg?style=for-the-badge)](https://github.com/goreleaser)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?style=for-the-badge)](https://conventionalcommits.org)
 
 Get the contributor stats summary from all repos of any given organization
 
-[![asciicast](https://asciinema.org/a/96136.png)](https://asciinema.org/a/96136)
+<img width="809" alt="image" src="https://user-images.githubusercontent.com/245435/125378448-22cd1600-e365-11eb-8a89-cb7204911f4c.png">
 
-## Install
+## install
 
-On macOS:
+### macOS
 
 ```sh
 brew install caarlos0/tap/org-stats
 ```
 
-On Linux:
+### linux
+
+#### snap
 
 ```sh
 snap install org-stats
+```
+
+#### apt
+
+```sh
+echo 'deb [trusted=yes] https://apt.fury.io/caarlos0/ /' | sudo tee /etc/apt/sources.list.d/caarlos0.list
+sudo apt update
+sudo apt install org-stats
+```
+
+#### yum
+
+```sh
+echo '[caarlos0]
+name=caarlos0
+baseurl=https://yum.fury.io/caarlos0/
+enabled=1
+gpgcheck=0' | sudo tee /etc/yum.repos.d/caarlos0.repo
+sudo yum install org-stats
 ```
