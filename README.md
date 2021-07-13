@@ -45,3 +45,8 @@ enabled=1
 gpgcheck=0' | sudo tee /etc/yum.repos.d/caarlos0.repo
 sudo yum install org-stats
 ```
+
+## stargazers over time
+
+[![Stargazers over time](https://starchart.cc/caarlos0/org-stats.svg)](https://starchart.cc/caarlos0/org-stats)
+      
