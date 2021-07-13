@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
+	"github.com/caarlos0/duration"
 	orgstats "github.com/caarlos0/org-stats/orgstats"
 	"github.com/caarlos0/spin"
 	"github.com/urfave/cli"
@@ -40,6 +42,11 @@ func main() {
 			Name:  "github-url",
 			Usage: "Custom GitHub URL (for GitHub Enterprise for example)",
 		},
+		cli.StringFlag{
+			Name:  "since",
+			Usage: "Time to look back to gather info (0s means everything). Examples: e.g. 2y, 1mo, 1w, 10d, 20h, 15m, 25s, 10ms, etc. Note that GitHub data comes summarized by week, so this is not",
+			Value: "0s",
+		},
 	}
 	app.Action = func(c *cli.Context) error {
 		token := c.String("token")
@@ -54,7 +61,12 @@ func main() {
 		}
 		spin := spin.New("  \033[36m%s Gathering data for '" + org + "'...\033[m")
 		spin.Start()
-		allStats, err := orgstats.Gather(token, org, blacklist, c.String("github-url"))
+
+		since, err := duration.Parse(c.String("since"))
+		if err != nil {
+			return cli.NewExitError("invalid --since duration", 1)
+		}
+		allStats, err := orgstats.Gather(token, org, blacklist, c.String("github-url"), time.Now().UTC().Add(-1*time.Duration(since)))
 		spin.Stop()
 		if err != nil {
 			return cli.NewExitError(err.Error(), 1)

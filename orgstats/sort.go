@@ -22,7 +22,7 @@ var ExtractDeletions = func(st Stat) int {
 
 func Sort(s Stats, extract Extract) []StatPair {
 	var result []StatPair
-	for key, value := range s {
+	for key, value := range s.data {
 		result = append(result, StatPair{Key: key, Value: extract(value)})
 	}
 	sort.Slice(result, func(i int, j int) bool {

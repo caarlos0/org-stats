@@ -1,6 +1,7 @@
 module github.com/caarlos0/org-stats
 
 require (
+	github.com/caarlos0/duration v0.0.0-20210713014422-2153d649c037
 	github.com/caarlos0/spin v1.1.0
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
