@@ -28,7 +28,7 @@ func NewStats(since time.Time) Stats {
 }
 
 // Gather a given organization's stats
-func Gather(token, org string, blacklist []string, url string, since time.Time) (Stats, error) {
+func Gather(token, org string, userBlacklist, repoBlacklist []string, url string, since time.Time) (Stats, error) {
 	ctx := context.Background()
 	allStats := NewStats(since)
 	client, err := newClient(ctx, token, url)
@@ -42,7 +42,7 @@ func Gather(token, org string, blacklist []string, url string, since time.Time) 
 	}
 
 	for _, repo := range allRepos {
-		if isBlacklisted(blacklist, repo.GetName()) {
+		if isBlacklisted(repoBlacklist, repo.GetName()) {
 			continue
 		}
 		stats, serr := getStats(ctx, client, org, *repo.Name)
@@ -50,7 +50,7 @@ func Gather(token, org string, blacklist []string, url string, since time.Time) 
 			return allStats, serr
 		}
 		for _, cs := range stats {
-			if isBlacklisted(blacklist, cs.Author.GetLogin()) {
+			if isBlacklisted(userBlacklist, cs.Author.GetLogin()) {
 				continue
 			}
 			allStats.add(cs)
