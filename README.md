@@ -3,7 +3,6 @@
 [![Release](https://img.shields.io/github/release/caarlos0/org-stats.svg?style=for-the-badge)](https://github.com/caarlos0/org-stats/releases/latest)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=for-the-badge)](/LICENSE.md)
 [![Build status](https://img.shields.io/github/workflow/status/caarlos0/org-stats/build?style=for-the-badge)](https://github.com/caarlos0/org-stats/actions?workflow=build)
-[![Codecov branch](https://img.shields.io/codecov/c/github/caarlos0/org-stats/master.svg?style=for-the-badge)](https://codecov.io/gh/caarlos0/org-stats)
 [![Go Doc](https://img.shields.io/badge/godoc-reference-blue.svg?style=for-the-badge)](http://godoc.org/github.com/caarlos0/org-stats)
 [![Powered By: GoReleaser](https://img.shields.io/badge/powered%20by-goreleaser-green.svg?style=for-the-badge)](https://github.com/goreleaser)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?style=for-the-badge)](https://conventionalcommits.org)
