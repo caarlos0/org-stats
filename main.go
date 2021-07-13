@@ -68,19 +68,7 @@ func main() {
 			return cli.NewExitError("invalid --since duration", 1)
 		}
 
-		var userBlacklist []string
-		var repoBlacklist []string
-
-		for _, b := range blacklist {
-			if strings.HasPrefix(b, "user:") {
-				userBlacklist = append(userBlacklist, strings.TrimPrefix(b, "user:"))
-			} else if strings.HasPrefix(b, "repo:") {
-				repoBlacklist = append(repoBlacklist, strings.TrimPrefix(b, "repo:"))
-			} else {
-				userBlacklist = append(userBlacklist, b)
-				repoBlacklist = append(repoBlacklist, b)
-			}
-		}
+		userBlacklist, repoBlacklist := buildBlacklists(blacklist)
 
 		allStats, err := orgstats.Gather(
 			token,
@@ -100,6 +88,22 @@ func main() {
 	if err := app.Run(os.Args); err != nil {
 		panic(err)
 	}
+}
+
+func buildBlacklists(blacklist []string) ([]string, []string) {
+	var userBlacklist []string
+	var repoBlacklist []string
+	for _, b := range blacklist {
+		if strings.HasPrefix(b, "user:") {
+			userBlacklist = append(userBlacklist, strings.TrimPrefix(b, "user:"))
+		} else if strings.HasPrefix(b, "repo:") {
+			repoBlacklist = append(repoBlacklist, strings.TrimPrefix(b, "repo:"))
+		} else {
+			userBlacklist = append(userBlacklist, b)
+			repoBlacklist = append(repoBlacklist, b)
+		}
+	}
+	return userBlacklist, repoBlacklist
 }
 
 func printHighlights(s orgstats.Stats, top int) {
