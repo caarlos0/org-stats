@@ -10,6 +10,7 @@ import (
 	"github.com/caarlos0/duration"
 	orgstats "github.com/caarlos0/org-stats/orgstats"
 	"github.com/caarlos0/spin"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 	"github.com/spf13/cobra/doc"
 )
@@ -39,7 +40,8 @@ Important notes:
 * In the ` + "`" + `--blacklist` + "`" + ` option, 'foo' blacklists both the 'foo' user and 'foo' repo, while 'user:foo' blacklists only the user and 'repo:foo' only the repository.
 * The ` + "`" + `--since` + "`" + ` option accepts all the regular time.Durations Go accepts, plus a few more: 1y (365d), 1mo (30d), 1w (7d) and 1d (24h).`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			spin := spin.New("  \033[36m%s Gathering data for '" + organization + "'...\033[m")
+			loadingStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
+			spin := spin.New(loadingStyle.Render("  %s Gathering data for '" + organization + "'..."))
 			spin.Start()
 
 			sinceD, err := duration.Parse(since)
@@ -170,20 +172,34 @@ func printHighlights(s orgstats.Stats, top int, includeReviews bool) {
 		)
 	}
 
+	var headerStyle = lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.AdaptiveColor{
+			Dark:  "#BD7EFC",
+			Light: "#7D56F4",
+		})
+
+	var bodyStyle = lipgloss.NewStyle().
+		PaddingLeft(2)
+
 	// TODO: handle no results for a given topic
 	for _, d := range data {
-		fmt.Printf("\033[1m%s champions are:\033[0m\n", d.trophy)
+		fmt.Println(headerStyle.Render(d.trophy + " champions are:"))
 		j := top
 		if len(d.stats) < j {
 			j = len(d.stats)
 		}
 		for i := 0; i < j; i++ {
-			fmt.Printf(
-				"%s %s with %d %s!\n",
-				emojiForPos(i),
-				d.stats[i].Key,
-				d.stats[i].Value,
-				d.kind,
+			fmt.Println(
+				bodyStyle.Render(
+					fmt.Sprintf(
+						"%s %s with %d %s!",
+						emojiForPos(i),
+						d.stats[i].Key,
+						d.stats[i].Value,
+						d.kind,
+					),
+				),
 			)
 		}
 		fmt.Printf("\n")
