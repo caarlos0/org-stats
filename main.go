@@ -48,6 +48,10 @@ func main() {
 			Usage: "Time to look back to gather info (0s means everything). Examples: e.g. 2y, 1mo, 1w, 10d, 20h, 15m, 25s, 10ms, etc. Note that GitHub data comes summarized by week, so this is not",
 			Value: "0s",
 		},
+		cli.BoolFlag{
+			Name:  "include-reviews",
+			Usage: "Include PR reviews in the stats",
+		},
 	}
 	app.Action = func(c *cli.Context) error {
 		token := c.String("token")
@@ -68,6 +72,8 @@ func main() {
 			return cli.NewExitError("invalid --since duration", 1)
 		}
 
+		includeReviews := c.Bool("include-reviews")
+
 		userBlacklist, repoBlacklist := buildBlacklists(blacklist)
 
 		allStats, err := orgstats.Gather(
@@ -77,12 +83,14 @@ func main() {
 			repoBlacklist,
 			c.String("github-url"),
 			time.Now().UTC().Add(-1*time.Duration(since)),
+			includeReviews,
 		)
 		spin.Stop()
 		if err != nil {
 			return cli.NewExitError(err.Error(), 1)
 		}
-		printHighlights(allStats, top)
+		fmt.Println()
+		printHighlights(allStats, top, includeReviews)
 		return nil
 	}
 	if err := app.Run(os.Args); err != nil {
@@ -106,15 +114,17 @@ func buildBlacklists(blacklist []string) ([]string, []string) {
 	return userBlacklist, repoBlacklist
 }
 
-func printHighlights(s orgstats.Stats, top int) {
-	data := []struct {
-		stats  []orgstats.StatPair
-		trophy string
-		kind   string
-	}{
+type statUI struct {
+	stats  []orgstats.StatPair
+	trophy string
+	kind   string
+}
+
+func printHighlights(s orgstats.Stats, top int, includeReviews bool) {
+	data := []statUI{
 		{
 			stats:  orgstats.Sort(s, orgstats.ExtractCommits),
-			trophy: "Commit",
+			trophy: "Commits",
 			kind:   "commits",
 		}, {
 			stats:  orgstats.Sort(s, orgstats.ExtractAdditions),
@@ -126,6 +136,16 @@ func printHighlights(s orgstats.Stats, top int) {
 			kind:   "lines removed",
 		},
 	}
+
+	if includeReviews {
+		data = append(data, statUI{
+			stats:  orgstats.Sort(s, orgstats.Reviews),
+			trophy: "Pull Requests Reviewed",
+			kind:   "pull requests reviewed",
+		},
+		)
+	}
+
 	for _, d := range data {
 		fmt.Printf("\033[1m%s champions are:\033[0m\n", d.trophy)
 		j := top

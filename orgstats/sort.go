@@ -20,6 +20,11 @@ var ExtractDeletions = func(st Stat) int {
 	return st.Deletions
 }
 
+// Reviews extract the reviewed prs section of the given stat
+var Reviews = func(st Stat) int {
+	return st.Reviews
+}
+
 func Sort(s Stats, extract Extract) []StatPair {
 	var result []StatPair
 	for key, value := range s.data {

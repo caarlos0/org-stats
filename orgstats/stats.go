@@ -2,6 +2,8 @@ package orgstats
 
 import (
 	"context"
+	"fmt"
+	"log"
 	"strings"
 	"time"
 
@@ -10,7 +12,7 @@ import (
 
 // Stat represents an user adds, rms and commits count
 type Stat struct {
-	Additions, Deletions, Commits int
+	Additions, Deletions, Commits, Reviews int
 }
 
 // Stats contains the user->Stat mapping
@@ -28,17 +30,105 @@ func NewStats(since time.Time) Stats {
 }
 
 // Gather a given organization's stats
-func Gather(token, org string, userBlacklist, repoBlacklist []string, url string, since time.Time) (Stats, error) {
+func Gather(
+	token, org string,
+	userBlacklist, repoBlacklist []string,
+	url string,
+	since time.Time,
+	includeReviewStats bool,
+) (Stats, error) {
 	ctx := context.Background()
-	allStats := NewStats(since)
 	client, err := newClient(ctx, token, url)
 	if err != nil {
-		return allStats, err
+		return Stats{}, err
 	}
 
+	allStats := NewStats(since)
+	if err := gatherLineStats(
+		ctx,
+		client,
+		org,
+		userBlacklist,
+		repoBlacklist,
+		&allStats,
+	); err != nil {
+		return Stats{}, err
+	}
+
+	if !includeReviewStats {
+		return allStats, nil
+	}
+
+	for user := range allStats.data {
+		if err := gatherReviewStats(
+			ctx,
+			client,
+			org,
+			user,
+			userBlacklist,
+			repoBlacklist,
+			&allStats,
+			since,
+		); err != nil {
+			return Stats{}, err
+		}
+	}
+
+	return allStats, nil
+}
+
+func gatherReviewStats(
+	ctx context.Context,
+	client *github.Client,
+	org, user string,
+	userBlacklist, repoBlacklist []string,
+	allStats *Stats,
+	since time.Time,
+) error {
+	ts := since.Format("2006-01-02")
+	// review:approved, review:changes_requested
+	reviewed, err := search(ctx, client, fmt.Sprintf("user:%s is:pr reviewed-by:%s created:>%s", org, user, ts))
+	if err != nil {
+		return err
+	}
+	allStats.addReviewStats(user, reviewed)
+	return nil
+}
+
+func search(
+	ctx context.Context,
+	client *github.Client,
+	query string,
+) (int, error) {
+	// log.Printf("searching '%s'", query)
+	result, _, err := client.Search.Issues(ctx, query, &github.SearchOptions{
+		ListOptions: github.ListOptions{
+			PerPage: 1,
+		},
+	})
+	if rateErr, ok := err.(*github.RateLimitError); ok {
+		handleRateLimit(rateErr)
+		return search(ctx, client, query)
+	}
+	if _, ok := err.(*github.AcceptedError); ok {
+		return search(ctx, client, query)
+	}
+	if err != nil {
+		return 0, fmt.Errorf("failed to search: %s: %w", query, err)
+	}
+	return *result.Total, nil
+}
+
+func gatherLineStats(
+	ctx context.Context,
+	client *github.Client,
+	org string,
+	userBlacklist, repoBlacklist []string,
+	allStats *Stats,
+) error {
 	allRepos, err := repos(ctx, client, org)
 	if err != nil {
-		return allStats, err
+		return err
 	}
 
 	for _, repo := range allRepos {
@@ -47,7 +137,7 @@ func Gather(token, org string, userBlacklist, repoBlacklist []string, url string
 		}
 		stats, serr := getStats(ctx, client, org, *repo.Name)
 		if serr != nil {
-			return allStats, serr
+			return serr
 		}
 		for _, cs := range stats {
 			if isBlacklisted(userBlacklist, cs.Author.GetLogin()) {
@@ -56,7 +146,7 @@ func Gather(token, org string, userBlacklist, repoBlacklist []string, url string
 			allStats.add(cs)
 		}
 	}
-	return allStats, err
+	return err
 }
 
 func isBlacklisted(blacklist []string, s string) bool {
@@ -68,7 +158,13 @@ func isBlacklisted(blacklist []string, s string) bool {
 	return false
 }
 
-func (s Stats) add(cs *github.ContributorStats) {
+func (s *Stats) addReviewStats(user string, reviewed int) {
+	stat := s.data[user]
+	stat.Reviews += reviewed
+	s.data[user] = stat
+}
+
+func (s *Stats) add(cs *github.ContributorStats) {
 	if cs.Author == nil {
 		return
 	}
@@ -87,6 +183,10 @@ func (s Stats) add(cs *github.ContributorStats) {
 	stat.Additions += adds
 	stat.Deletions += rms
 	stat.Commits += commits
+	if stat.Additions+stat.Deletions+stat.Commits == 0 && !s.since.IsZero() {
+		// ignore users with no activity when running with a since time
+		return
+	}
 	s.data[*cs.Author.Login] = stat
 }
 
@@ -97,6 +197,10 @@ func repos(ctx context.Context, client *github.Client, org string) ([]*github.Re
 	var allRepos []*github.Repository
 	for {
 		repos, resp, err := client.Repositories.ListByOrg(ctx, org, opt)
+		if rateErr, ok := err.(*github.RateLimitError); ok {
+			handleRateLimit(rateErr)
+			continue
+		}
 		if err != nil {
 			return allRepos, err
 		}
@@ -113,7 +217,7 @@ func getStats(ctx context.Context, client *github.Client, org, repo string) ([]*
 	stats, _, err := client.Repositories.ListContributorsStats(ctx, org, repo)
 	if err != nil {
 		if rateErr, ok := err.(*github.RateLimitError); ok {
-			time.Sleep(time.Now().UTC().Sub(rateErr.Rate.Reset.Time.UTC()))
+			handleRateLimit(rateErr)
 			return getStats(ctx, client, org, repo)
 		}
 		if _, ok := err.(*github.AcceptedError); ok {
@@ -121,4 +225,13 @@ func getStats(ctx context.Context, client *github.Client, org, repo string) ([]*
 		}
 	}
 	return stats, err
+}
+
+func handleRateLimit(err *github.RateLimitError) {
+	s := err.Rate.Reset.UTC().Sub(time.Now().UTC())
+	if s < 0 {
+		s = 5 * time.Second
+	}
+	log.Printf("hit rate limit, waiting %v", s)
+	time.Sleep(s)
 }
