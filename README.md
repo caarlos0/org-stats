@@ -11,6 +11,10 @@ Get the contributor stats summary from all repos of any given organization
 
 <img width="809" alt="image" src="https://user-images.githubusercontent.com/245435/125378448-22cd1600-e365-11eb-8a89-cb7204911f4c.png">
 
+## usage
+
+Check the [docs folder](/docs/org-stats.md).
+
 ## install
 
 ### macOS
@@ -49,4 +53,4 @@ sudo yum install org-stats
 ## stargazers over time
 
 [![Stargazers over time](https://starchart.cc/caarlos0/org-stats.svg)](https://starchart.cc/caarlos0/org-stats)
-      
+
