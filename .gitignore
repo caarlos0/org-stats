@@ -3,3 +3,4 @@ org-stats
 bin
 coverage.out
 snap.login
+completions/
