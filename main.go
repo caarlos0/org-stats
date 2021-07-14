@@ -14,13 +14,15 @@ import (
 	"github.com/spf13/cobra/doc"
 )
 
-var token, organization, githubURL, since string
-var blacklist []string
-var top int
-var includeReviews bool
+var (
+	token, organization, githubURL, since string
+	blacklist                             []string
+	top                                   int
+	includeReviews                        bool
+)
 
 func main() {
-	var rootCmd = &cobra.Command{
+	rootCmd := &cobra.Command{
 		Use:   "org-stats",
 		Short: "Get the contributor stats summary from all repos of any given organization",
 		Long: `org-stats can be used to get an overall sense of your org's contributors.
@@ -71,7 +73,7 @@ Important notes:
 		},
 	}
 
-	var versionCmd = &cobra.Command{
+	versionCmd := &cobra.Command{
 		Use:   "version",
 		Short: "Prints org-stats version",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -87,7 +89,7 @@ Important notes:
 		},
 	}
 
-	var docsCmd = &cobra.Command{
+	docsCmd := &cobra.Command{
 		Use:                   "docs",
 		Short:                 "Generates donuts's command line docs",
 		SilenceUsage:          true,
