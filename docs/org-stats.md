@@ -26,6 +26,7 @@ org-stats [flags]
 
 ```
   -b, --blacklist strings   blacklist repos and/or users
+      --csv-path string     path to write a csv file with all data collected
       --github-url string   custom github base url (if using github enterprise)
   -h, --help                help for org-stats
       --include-reviews     include pull request reviews in the stats
