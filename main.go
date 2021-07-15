@@ -1,17 +1,16 @@
 package main
 
 import (
-	"encoding/csv"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 	"runtime/debug"
-	"sort"
 	"strings"
 	"time"
 
 	"github.com/caarlos0/duration"
+	"github.com/caarlos0/org-stats/csv"
+	"github.com/caarlos0/org-stats/highlights"
 	orgstats "github.com/caarlos0/org-stats/orgstats"
 	"github.com/caarlos0/spin"
 	"github.com/charmbracelet/lipgloss"
@@ -72,7 +71,6 @@ Important notes:
 			if err != nil {
 				return err
 			}
-			fmt.Println()
 
 			if csvPath != "" {
 				if err := os.MkdirAll(filepath.Dir(csvPath), 0755); err != nil {
@@ -82,13 +80,13 @@ Important notes:
 				if err != nil {
 					return fmt.Errorf("failed to create csv file: %w", err)
 				}
-				if err := writeCsv(allStats, includeReviews, f); err != nil {
+				if err := csv.Write(f, allStats, includeReviews); err != nil {
 					return fmt.Errorf("failed to create csv file: %w", err)
 				}
 			}
 
-			printHighlights(allStats, top, includeReviews)
-			return nil
+			fmt.Println()
+			return highlights.Write(os.Stdout, allStats, top, includeReviews)
 		},
 		PreRun: func(cmd *cobra.Command, args []string) {
 			if token == "" {
@@ -161,103 +159,4 @@ func buildBlacklists(blacklist []string) ([]string, []string) {
 		}
 	}
 	return userBlacklist, repoBlacklist
-}
-
-type statUI struct {
-	stats  []orgstats.StatPair
-	trophy string
-	kind   string
-}
-
-func writeCsv(s orgstats.Stats, includeReviews bool, f io.Writer) error {
-	w := csv.NewWriter(f)
-	defer w.Flush()
-	headers := []string{"login", "commits", "lines-added", "lines-removed"}
-	if includeReviews {
-		headers = append(headers, "reviews")
-	}
-	if err := w.Write(headers); err != nil {
-		return fmt.Errorf("failed to write csv: %w", err)
-	}
-	logins := s.Logins()
-	sort.Strings(logins)
-	for _, login := range logins {
-		stat := s.For(login)
-		record := []string{login, fmt.Sprintf("%d", stat.Commits), fmt.Sprintf("%d", stat.Additions), fmt.Sprintf("%d", stat.Deletions)}
-		if includeReviews {
-			record = append(record, fmt.Sprintf("%d", stat.Reviews))
-		}
-		if err := w.Write(record); err != nil {
-			return fmt.Errorf("failed to write csv: %w", err)
-		}
-	}
-	return w.Error()
-}
-
-func printHighlights(s orgstats.Stats, top int, includeReviews bool) {
-	data := []statUI{
-		{
-			stats:  orgstats.Sort(s, orgstats.ExtractCommits),
-			trophy: "Commits",
-			kind:   "commits",
-		}, {
-			stats:  orgstats.Sort(s, orgstats.ExtractAdditions),
-			trophy: "Lines Added",
-			kind:   "lines added",
-		}, {
-			stats:  orgstats.Sort(s, orgstats.ExtractDeletions),
-			trophy: "Housekeeper",
-			kind:   "lines removed",
-		},
-	}
-
-	if includeReviews {
-		data = append(data, statUI{
-			stats:  orgstats.Sort(s, orgstats.Reviews),
-			trophy: "Pull Requests Reviewed",
-			kind:   "pull requests reviewed",
-		},
-		)
-	}
-
-	var headerStyle = lipgloss.NewStyle().
-		Bold(true).
-		Foreground(lipgloss.AdaptiveColor{
-			Dark:  "#BD7EFC",
-			Light: "#7D56F4",
-		})
-
-	var bodyStyle = lipgloss.NewStyle().
-		PaddingLeft(2)
-
-	// TODO: handle no results for a given topic
-	for _, d := range data {
-		fmt.Println(headerStyle.Render(d.trophy + " champions are:"))
-		j := top
-		if len(d.stats) < j {
-			j = len(d.stats)
-		}
-		for i := 0; i < j; i++ {
-			fmt.Println(
-				bodyStyle.Render(
-					fmt.Sprintf(
-						"%s %s with %d %s!",
-						emojiForPos(i),
-						d.stats[i].Key,
-						d.stats[i].Value,
-						d.kind,
-					),
-				),
-			)
-		}
-		fmt.Printf("\n")
-	}
-}
-
-func emojiForPos(pos int) string {
-	emojis := []string{"\U0001f3c6", "\U0001f948", "\U0001f949"}
-	if pos < len(emojis) {
-		return emojis[pos]
-	}
-	return " "
 }
