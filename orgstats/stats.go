@@ -43,17 +43,13 @@ func NewStats(since time.Time) Stats {
 
 // Gather a given organization's stats
 func Gather(
-	token, org string,
+	ctx context.Context,
+	client *github.Client,
+	org string,
 	userBlacklist, repoBlacklist []string,
-	url string,
 	since time.Time,
 	includeReviewStats bool,
 ) (Stats, error) {
-	ctx := context.Background()
-	client, err := newClient(ctx, token, url)
-	if err != nil {
-		return Stats{}, err
-	}
 
 	allStats := NewStats(since)
 	if err := gatherLineStats(

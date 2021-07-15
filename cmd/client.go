@@ -1,4 +1,4 @@
-package orgstats
+package cmd
 
 import (
 	"context"

@@ -1,17 +1,14 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/caarlos0/duration"
-	"github.com/caarlos0/org-stats/csv"
-	"github.com/caarlos0/org-stats/highlights"
-	"github.com/caarlos0/org-stats/orgstats"
-	"github.com/caarlos0/spin"
-	"github.com/charmbracelet/lipgloss"
+	"github.com/caarlos0/org-stats/cmd/ui"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 )
 
@@ -72,9 +69,11 @@ Important notes:
 		}
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		loadingStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
-		spin := spin.New(loadingStyle.Render("  %s Gathering data for '" + organization + "'..."))
-		spin.Start()
+		ctx := context.Background()
+		client, err := newClient(ctx, token, githubURL)
+		if err != nil {
+			return err
+		}
 
 		sinceD, err := duration.Parse(since)
 		if err != nil {
@@ -83,34 +82,48 @@ Important notes:
 
 		userBlacklist, repoBlacklist := buildBlacklists(blacklist)
 
-		allStats, err := orgstats.Gather(
-			token,
+		p := tea.NewProgram(ui.NewInitialModel(
+			client,
 			organization,
 			userBlacklist,
 			repoBlacklist,
-			githubURL,
 			time.Now().UTC().Add(-1*time.Duration(sinceD)),
 			includeReviews,
-		)
-		spin.Stop()
-		if err != nil {
-			return err
-		}
+		))
+		return p.Start()
 
-		if csvPath != "" {
-			if err := os.MkdirAll(filepath.Dir(csvPath), 0755); err != nil {
-				return fmt.Errorf("failed to create csv file: %w", err)
-			}
-			f, err := os.OpenFile(csvPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
-			if err != nil {
-				return fmt.Errorf("failed to create csv file: %w", err)
-			}
-			if err := csv.Write(f, allStats, includeReviews); err != nil {
-				return fmt.Errorf("failed to create csv file: %w", err)
-			}
-		}
+		// loadingStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
+		// spin := spin.New(loadingStyle.Render("  %s Gathering data for '" + organization + "'..."))
+		// spin.Start()
 
-		fmt.Println()
-		return highlights.Write(os.Stdout, allStats, top, includeReviews)
+		// allStats, err := orgstats.Gather(
+		// 	token,
+		// 	organization,
+		// 	userBlacklist,
+		// 	repoBlacklist,
+		// 	githubURL,
+		// 	time.Now().UTC().Add(-1*time.Duration(sinceD)),
+		// 	includeReviews,
+		// )
+		// spin.Stop()
+		// if err != nil {
+		// 	return err
+		// }
+
+		// if csvPath != "" {
+		// 	if err := os.MkdirAll(filepath.Dir(csvPath), 0755); err != nil {
+		// 		return fmt.Errorf("failed to create csv file: %w", err)
+		// 	}
+		// 	f, err := os.OpenFile(csvPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+		// 	if err != nil {
+		// 		return fmt.Errorf("failed to create csv file: %w", err)
+		// 	}
+		// 	if err := csv.Write(f, allStats, includeReviews); err != nil {
+		// 		return fmt.Errorf("failed to create csv file: %w", err)
+		// 	}
+		// }
+
+		// fmt.Println()
+		// return highlights.Write(os.Stdout, allStats, top, includeReviews)
 	},
 }
