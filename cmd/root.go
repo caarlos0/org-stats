@@ -3,7 +3,9 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/caarlos0/duration"
@@ -82,48 +84,29 @@ Important notes:
 
 		userBlacklist, repoBlacklist := buildBlacklists(blacklist)
 
+		var csv io.Writer = io.Discard
+		if csvPath != "" {
+			if err := os.MkdirAll(filepath.Dir(csvPath), 0755); err != nil {
+				return fmt.Errorf("failed to create csv file: %w", err)
+			}
+			f, err := os.OpenFile(csvPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+			if err != nil {
+				return fmt.Errorf("failed to create csv file: %w", err)
+			}
+			defer f.Close()
+			csv = f
+		}
+
 		p := tea.NewProgram(ui.NewInitialModel(
 			client,
 			organization,
 			userBlacklist,
 			repoBlacklist,
 			time.Now().UTC().Add(-1*time.Duration(sinceD)),
+			top,
 			includeReviews,
+			csv,
 		))
 		return p.Start()
-
-		// loadingStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
-		// spin := spin.New(loadingStyle.Render("  %s Gathering data for '" + organization + "'..."))
-		// spin.Start()
-
-		// allStats, err := orgstats.Gather(
-		// 	token,
-		// 	organization,
-		// 	userBlacklist,
-		// 	repoBlacklist,
-		// 	githubURL,
-		// 	time.Now().UTC().Add(-1*time.Duration(sinceD)),
-		// 	includeReviews,
-		// )
-		// spin.Stop()
-		// if err != nil {
-		// 	return err
-		// }
-
-		// if csvPath != "" {
-		// 	if err := os.MkdirAll(filepath.Dir(csvPath), 0755); err != nil {
-		// 		return fmt.Errorf("failed to create csv file: %w", err)
-		// 	}
-		// 	f, err := os.OpenFile(csvPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
-		// 	if err != nil {
-		// 		return fmt.Errorf("failed to create csv file: %w", err)
-		// 	}
-		// 	if err := csv.Write(f, allStats, includeReviews); err != nil {
-		// 		return fmt.Errorf("failed to create csv file: %w", err)
-		// 	}
-		// }
-
-		// fmt.Println()
-		// return highlights.Write(os.Stdout, allStats, top, includeReviews)
 	},
 }

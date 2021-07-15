@@ -3,8 +3,10 @@ package ui
 import (
 	"context"
 	"fmt"
+	"io"
 	"time"
 
+	"github.com/caarlos0/org-stats/csv"
 	"github.com/caarlos0/org-stats/orgstats"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -20,7 +22,9 @@ func NewInitialModel(
 	org string,
 	userBlacklist, repoBlacklist []string,
 	since time.Time,
+	top int,
 	includeReviewStats bool,
+	csv io.Writer,
 ) InitialModel {
 	var s = spinner.NewModel()
 	s.Spinner = spinner.MiniDot
@@ -33,7 +37,9 @@ func NewInitialModel(
 		repoBlacklist:      repoBlacklist,
 		since:              since,
 		includeReviewStats: includeReviewStats,
+		top:                top,
 		spinner:            s,
+		csv:                csv,
 		loading:            true,
 	}
 }
@@ -51,6 +57,8 @@ type InitialModel struct {
 	repoBlacklist      []string
 	since              time.Time
 	includeReviewStats bool
+	top                int
+	csv                io.Writer
 }
 
 func (m InitialModel) Init() tea.Cmd {
@@ -74,11 +82,11 @@ func (m InitialModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.err = msg.error
 		return m, nil
 	case gotResults:
-		// var list = NewListModel(m.client, msg.repos)
-		// return list, list.Init()
-		fmt.Println("got results")
-		m.loading = false
-		return m, tea.Quit
+		highlights := NewHighlightsModel(msg.stats, m.top, m.includeReviewStats)
+		return highlights, tea.Batch(
+			writeCsv(m.csv, msg.stats, m.includeReviewStats),
+			highlights.Init(),
+		)
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q", "esc":
@@ -97,7 +105,7 @@ func (m InitialModel) View() string {
 	if m.err != nil {
 		return m.err.Error()
 	}
-	str := fmt.Sprintf("\n\n   %s Gathering data for %s...press q to quit\n\n", m.spinner.View(), m.org)
+	str := fmt.Sprintf("\n\n   %s Gathering data for %s... press q to quit\n\n", m.spinner.View(), m.org)
 	if m.quitting {
 		return str + "\n"
 	}
@@ -129,5 +137,14 @@ func getStats(
 			return errMsg{err}
 		}
 		return gotResults{stats}
+	}
+}
+
+func writeCsv(w io.Writer, stats orgstats.Stats, includeReviews bool) tea.Cmd {
+	return func() tea.Msg {
+		if err := csv.Write(w, stats, includeReviews); err != nil {
+			return errMsg{err}
+		}
+		return tea.Quit
 	}
 }
