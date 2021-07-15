@@ -4,3 +4,4 @@ bin
 coverage.out
 snap.login
 completions/
+*.log

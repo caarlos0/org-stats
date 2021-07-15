@@ -97,6 +97,12 @@ Important notes:
 			csv = f
 		}
 
+		f, err := tea.LogToFile("org-stats.log", "org-stats")
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+
 		p := tea.NewProgram(ui.NewInitialModel(
 			client,
 			organization,

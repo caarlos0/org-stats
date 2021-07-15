@@ -48,8 +48,6 @@ github.com/bgentry/speakeasy v0.1.0/go.mod h1:+zsyZBPWlz7T6j88CTgSN5bM796AkVf0kB
 github.com/bketelsen/crypt v0.0.4/go.mod h1:aI6NrJ0pMGgvZKL1iVgXLnfIFJtfV+bKCoqOes/6LfM=
 github.com/caarlos0/duration v0.0.0-20210713014422-2153d649c037 h1:Rn1A0df8CQZsO7hDvZGAVR06N6jqonCuj/K3IrGNZZY=
 github.com/caarlos0/duration v0.0.0-20210713014422-2153d649c037/go.mod h1:mSkwb/eZEwOJJJ4tqAKiuhLIPe0e9+FKhlU0oMCpbf8=
-github.com/caarlos0/spin v1.1.0 h1:EjsfGbZJejib25BPnDqf7iL2z9RUna7refvUf+AN9UE=
-github.com/caarlos0/spin v1.1.0/go.mod h1:HOC4pUvfhjXR2yDt+sEY9dRc2m4CCaK5z5oQYAbzXSA=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/charmbracelet/bubbles v0.8.0 h1:+l2op90Ag37Vn+30O1hbg/0wBl+e+sxHhgY1F/rvdHs=
 github.com/charmbracelet/bubbles v0.8.0/go.mod h1:5WX1sSSjNCgCrzvRMN/z23HxvWaa+AI16Ch0KPZPeDs=

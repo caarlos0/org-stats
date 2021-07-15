@@ -38,14 +38,21 @@ func Write(w io.Writer, s orgstats.Stats, top int, includeReviews bool) error {
 		Foreground(lipgloss.AdaptiveColor{
 			Dark:  "#BD7EFC",
 			Light: "#7D56F4",
-		})
+		}).
+		MarginTop(1).
+		Underline(true)
 
 	var bodyStyle = lipgloss.NewStyle().
-		PaddingLeft(2)
+		MarginLeft(2)
+
+	var userStyle = lipgloss.NewStyle().Bold(true)
 
 	// TODO: handle no results for a given topic
 	for _, d := range data {
-		if _, err := fmt.Fprintln(w, headerStyle.Render(d.trophy+" champions are:")); err != nil {
+		if _, err := fmt.Fprintln(
+			w,
+			headerStyle.Render(d.trophy+" champions are:"),
+		); err != nil {
 			return err
 		}
 		j := top
@@ -58,7 +65,7 @@ func Write(w io.Writer, s orgstats.Stats, top int, includeReviews bool) error {
 					fmt.Sprintf(
 						"%s %s with %d %s!",
 						emojiForPos(i),
-						d.stats[i].Key,
+						userStyle.Render(d.stats[i].Key),
 						d.stats[i].Value,
 						d.kind,
 					),
@@ -66,9 +73,6 @@ func Write(w io.Writer, s orgstats.Stats, top int, includeReviews bool) error {
 			); err != nil {
 				return err
 			}
-		}
-		if _, err := fmt.Fprintln(w); err != nil {
-			return err
 		}
 	}
 	return nil
