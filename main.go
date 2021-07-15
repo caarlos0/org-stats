@@ -1,9 +1,13 @@
 package main
 
 import (
+	"encoding/csv"
 	"fmt"
+	"io"
 	"os"
+	"path/filepath"
 	"runtime/debug"
+	"sort"
 	"strings"
 	"time"
 
@@ -16,10 +20,14 @@ import (
 )
 
 var (
-	token, organization, githubURL, since string
-	blacklist                             []string
-	top                                   int
-	includeReviews                        bool
+	token          string
+	organization   string
+	githubURL      string
+	since          string
+	csvPath        string
+	blacklist      []string
+	top            int
+	includeReviews bool
 )
 
 func main() {
@@ -65,6 +73,20 @@ Important notes:
 				return err
 			}
 			fmt.Println()
+
+			if csvPath != "" {
+				if err := os.MkdirAll(filepath.Dir(csvPath), 0755); err != nil {
+					return fmt.Errorf("failed to create csv file: %w", err)
+				}
+				f, err := os.OpenFile(csvPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+				if err != nil {
+					return fmt.Errorf("failed to create csv file: %w", err)
+				}
+				if err := writeCsv(allStats, includeReviews, f); err != nil {
+					return fmt.Errorf("failed to create csv file: %w", err)
+				}
+			}
+
 			printHighlights(allStats, top, includeReviews)
 			return nil
 		},
@@ -115,6 +137,7 @@ Important notes:
 	rootCmd.Flags().StringVar(&githubURL, "github-url", "", "custom github base url (if using github enterprise)")
 	rootCmd.Flags().StringVar(&since, "since", "0s", "time to look back to gather info (0s means everything)")
 	rootCmd.Flags().BoolVar(&includeReviews, "include-reviews", false, "include pull request reviews in the stats")
+	rootCmd.Flags().StringVar(&csvPath, "csv-path", "", "path to write a csv file with all data collected")
 
 	rootCmd.AddCommand(versionCmd, docsCmd)
 
@@ -144,6 +167,31 @@ type statUI struct {
 	stats  []orgstats.StatPair
 	trophy string
 	kind   string
+}
+
+func writeCsv(s orgstats.Stats, includeReviews bool, f io.Writer) error {
+	w := csv.NewWriter(f)
+	defer w.Flush()
+	headers := []string{"login", "commits", "lines-added", "lines-removed"}
+	if includeReviews {
+		headers = append(headers, "reviews")
+	}
+	if err := w.Write(headers); err != nil {
+		return fmt.Errorf("failed to write csv: %w", err)
+	}
+	logins := s.Logins()
+	sort.Strings(logins)
+	for _, login := range logins {
+		stat := s.For(login)
+		record := []string{login, fmt.Sprintf("%d", stat.Commits), fmt.Sprintf("%d", stat.Additions), fmt.Sprintf("%d", stat.Deletions)}
+		if includeReviews {
+			record = append(record, fmt.Sprintf("%d", stat.Reviews))
+		}
+		if err := w.Write(record); err != nil {
+			return fmt.Errorf("failed to write csv: %w", err)
+		}
+	}
+	return w.Error()
 }
 
 func printHighlights(s orgstats.Stats, top int, includeReviews bool) {

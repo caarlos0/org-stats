@@ -21,6 +21,18 @@ type Stats struct {
 	since time.Time
 }
 
+func (s Stats) Logins() []string {
+	logins := make([]string, 0, len(s.data))
+	for login := range s.data {
+		logins = append(logins, login)
+	}
+	return logins
+}
+
+func (s Stats) For(login string) Stat {
+	return s.data[login]
+}
+
 // NewStats return a new Stats map
 func NewStats(since time.Time) Stats {
 	return Stats{
