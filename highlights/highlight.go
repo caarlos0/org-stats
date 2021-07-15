@@ -45,8 +45,6 @@ func Write(w io.Writer, s orgstats.Stats, top int, includeReviews bool) error {
 	var bodyStyle = lipgloss.NewStyle().
 		MarginLeft(2)
 
-	var userStyle = lipgloss.NewStyle().Bold(true)
-
 	// TODO: handle no results for a given topic
 	for _, d := range data {
 		if _, err := fmt.Fprintln(
@@ -65,7 +63,7 @@ func Write(w io.Writer, s orgstats.Stats, top int, includeReviews bool) error {
 					fmt.Sprintf(
 						"%s %s with %d %s!",
 						emojiForPos(i),
-						userStyle.Render(d.stats[i].Key),
+						d.stats[i].Key,
 						d.stats[i].Value,
 						d.kind,
 					),
