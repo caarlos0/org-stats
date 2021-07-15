@@ -60,3 +60,6 @@ sudo yum install org-stats
 
 [![Stargazers over time](https://starchart.cc/caarlos0/org-stats.svg)](https://starchart.cc/caarlos0/org-stats)
 
+## special thanks
+
+- [@PenzinAlexander](https://github.com/PenzinAlexander) for sponsoring the `--include-reviews`, `--since` and `--csv-path` features.
