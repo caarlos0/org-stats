@@ -9,7 +9,13 @@
 
 Get the contributor stats summary from all repos of any given organization
 
-<img width="953" alt="image" src="https://user-images.githubusercontent.com/245435/125553539-6787ee62-0c75-49ae-9004-e1857cebee04.png">
+## screenshots
+
+<p align="center">
+  <img width="49%" alt="image" src="https://user-images.githubusercontent.com/245435/125717673-163da857-3456-4b98-ab66-29f5bc61e7cf.png">
+  <img width="49%" alt="image" src="https://user-images.githubusercontent.com/245435/125717683-821e13cc-3b2f-4c4d-9032-b69eb26bf5c6.png">
+</p>
+
 
 ## usage
 
