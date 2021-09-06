@@ -4,7 +4,7 @@ require (
 	github.com/caarlos0/duration v0.0.0-20210713014422-2153d649c037
 	github.com/charmbracelet/bubbles v0.8.0
 	github.com/charmbracelet/bubbletea v0.14.1
-	github.com/charmbracelet/lipgloss v0.3.0
+	github.com/charmbracelet/lipgloss v0.4.0
 	github.com/google/go-github/v37 v37.0.0
 	github.com/matryer/is v1.4.0
 	github.com/spf13/cobra v1.2.1
