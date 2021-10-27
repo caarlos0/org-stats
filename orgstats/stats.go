@@ -63,6 +63,8 @@ func Gather(
 		return Stats{}, err
 	}
 
+	log.Println("total authors stats:", len(allStats.data))
+
 	if !includeReviewStats {
 		return allStats, nil
 	}
@@ -141,6 +143,7 @@ func gatherLineStats(
 
 	for _, repo := range allRepos {
 		if isBlacklisted(repoBlacklist, repo.GetName()) {
+			log.Println("ignoring blacklisted repo:", repo.GetName())
 			continue
 		}
 		stats, serr := getStats(ctx, client, org, *repo.Name)
@@ -149,8 +152,10 @@ func gatherLineStats(
 		}
 		for _, cs := range stats {
 			if isBlacklisted(userBlacklist, cs.Author.GetLogin()) {
+				log.Println("ignoring blacklisted author:", cs.Author.GetLogin())
 				continue
 			}
+			log.Println("recording stats for author", cs.Author.GetLogin(), "on repo", repo.GetName())
 			allStats.add(cs)
 		}
 	}
@@ -173,10 +178,10 @@ func (s *Stats) addReviewStats(user string, reviewed int) {
 }
 
 func (s *Stats) add(cs *github.ContributorStats) {
-	if cs.Author == nil {
+	if cs.GetAuthor() == nil {
 		return
 	}
-	stat := s.data[*cs.Author.Login]
+	stat := s.data[cs.GetAuthor().GetLogin()]
 	var adds int
 	var rms int
 	var commits int
@@ -195,7 +200,7 @@ func (s *Stats) add(cs *github.ContributorStats) {
 		// ignore users with no activity when running with a since time
 		return
 	}
-	s.data[*cs.Author.Login] = stat
+	s.data[cs.GetAuthor().GetLogin()] = stat
 }
 
 func repos(ctx context.Context, client *github.Client, org string) ([]*github.Repository, error) {
@@ -218,6 +223,8 @@ func repos(ctx context.Context, client *github.Client, org string) ([]*github.Re
 		}
 		opt.ListOptions.Page = resp.NextPage
 	}
+
+	log.Println("got", len(allRepos), "repositories")
 	return allRepos, nil
 }
 
