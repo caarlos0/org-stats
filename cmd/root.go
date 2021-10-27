@@ -103,12 +103,17 @@ Important notes:
 		}
 		defer f.Close()
 
+		sinceT := time.Time{}
+		if sinceD > 0 {
+			sinceT = time.Now().UTC().Add(-1 * time.Duration(sinceD))
+		}
+
 		p := tea.NewProgram(ui.NewInitialModel(
 			client,
 			organization,
 			userBlacklist,
 			repoBlacklist,
-			time.Now().UTC().Add(-1*time.Duration(sinceD)),
+			sinceT,
 			top,
 			includeReviews,
 			csv,
