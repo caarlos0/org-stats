@@ -11,7 +11,7 @@ import (
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/google/go-github/v37/github"
+	"github.com/google/go-github/v39/github"
 )
 
 type errMsg struct{ error }

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/go-github/v37/github"
+	"github.com/google/go-github/v39/github"
 )
 
 // Stat represents an user adds, rms and commits count
@@ -108,7 +108,7 @@ func search(
 	client *github.Client,
 	query string,
 ) (int, error) {
-	// log.Printf("searching '%s'", query)
+	log.Printf("searching '%s'", query)
 	result, _, err := client.Search.Issues(ctx, query, &github.SearchOptions{
 		ListOptions: github.ListOptions{
 			PerPage: 1,

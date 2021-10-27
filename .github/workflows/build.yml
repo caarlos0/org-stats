@@ -9,7 +9,7 @@ jobs:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     strategy:
       matrix:
-        go-version: [~1.16]
+        go-version: [~1.17]
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     env:
