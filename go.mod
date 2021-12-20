@@ -7,8 +7,8 @@ require (
 	github.com/charmbracelet/lipgloss v0.4.0
 	github.com/google/go-github/v39 v39.2.0
 	github.com/matryer/is v1.4.0
-	github.com/spf13/cobra v1.2.1
-	golang.org/x/oauth2 v0.0.0-20211005180243-6b3c2da341f1
+	github.com/spf13/cobra v1.3.0
+	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
 )
 
 require (
@@ -28,7 +28,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/net v0.0.0-20211020060615-d418f374d309 // indirect
-	golang.org/x/sys v0.0.0-20211025201205-69cdffdb9359 // indirect
+	golang.org/x/sys v0.0.0-20211205182925-97ca703d548d // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
