@@ -59,7 +59,7 @@ sudo yum install org-stats
 #### arch linux
 
 ```sh
-yay -Sy org-stats-bin
+yay -S org-stats-bin
 ```
 
 ## stargazers over time
