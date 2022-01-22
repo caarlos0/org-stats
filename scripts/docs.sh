@@ -8,9 +8,6 @@ fi
 
 rm -rf ./docs/*.md
 
-git checkout -- go.*
-go mod edit -replace github.com/spf13/cobra=github.com/caarlos0/cobra@completions-md
-go mod tidy
 go run . docs
 
 "$SED" \

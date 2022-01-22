@@ -46,7 +46,9 @@ func init() {
 	rootCmd.Flags().BoolVar(&includeReviews, "include-reviews", false, "include pull request reviews in the stats")
 	rootCmd.Flags().StringVar(&csvPath, "csv-path", "", "path to write a csv file with all data collected")
 
-	rootCmd.AddCommand(versionCmd, docsCmd)
+	rootCmd.CompletionOptions.HiddenDefaultCmd = true
+
+	rootCmd.AddCommand(versionCmd, docsCmd, manCmd)
 }
 
 var rootCmd = &cobra.Command{

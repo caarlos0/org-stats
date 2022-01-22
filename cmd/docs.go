@@ -7,7 +7,7 @@ import (
 
 var docsCmd = &cobra.Command{
 	Use:                   "docs",
-	Short:                 "Generates donuts's command line docs",
+	Short:                 "Generates org-stats's command line docs",
 	SilenceUsage:          true,
 	DisableFlagsInUseLine: true,
 	Hidden:                true,
