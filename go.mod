@@ -3,7 +3,7 @@ module github.com/caarlos0/org-stats
 require (
 	github.com/caarlos0/duration v0.0.0-20210713014422-2153d649c037
 	github.com/charmbracelet/bubbles v0.10.2
-	github.com/charmbracelet/bubbletea v0.19.3
+	github.com/charmbracelet/bubbletea v0.20.0
 	github.com/charmbracelet/lipgloss v0.5.0
 	github.com/google/go-github/v39 v39.2.0
 	github.com/matryer/is v1.4.0
@@ -26,7 +26,7 @@ require (
 	github.com/muesli/mango v0.0.0-20220201014152-f7df5a1c5b4b // indirect
 	github.com/muesli/mango-pflag v0.0.0-20220201014449-d694870c5590 // indirect
 	github.com/muesli/reflow v0.3.0 // indirect
-	github.com/muesli/termenv v0.11.1-0.20220204035834-5ac8409525e0 // indirect
+	github.com/muesli/termenv v0.11.1-0.20220212125758-44cd13922739 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
