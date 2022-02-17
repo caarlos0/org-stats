@@ -2,7 +2,7 @@ module github.com/caarlos0/org-stats
 
 require (
 	github.com/caarlos0/duration v0.0.0-20210713014422-2153d649c037
-	github.com/charmbracelet/bubbles v0.10.2
+	github.com/charmbracelet/bubbles v0.10.3
 	github.com/charmbracelet/bubbletea v0.20.0
 	github.com/charmbracelet/lipgloss v0.5.0
 	github.com/google/go-github/v39 v39.2.0
