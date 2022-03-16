@@ -17,7 +17,7 @@ var manCmd = &cobra.Command{
 	Hidden:                true,
 	Args:                  cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		manPage, err := mcobra.NewManPageFromCobra(1, cmd.Root())
+		manPage, err := mcobra.NewManPage(1, cmd.Root())
 		if err != nil {
 			return err
 		}
