@@ -21,5 +21,7 @@ jobs:
         name: docs
         run: ./scripts/docs.sh
       - uses: stefanzweifel/git-auto-commit-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           commit_message: "docs: update cmd docs"
