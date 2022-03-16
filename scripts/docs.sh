@@ -7,6 +7,7 @@ if which gsed >/dev/null 2>&1; then
 fi
 
 rm -rf ./docs/*.md
+mkdir docs
 
 go run . docs
 
