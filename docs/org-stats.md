@@ -17,7 +17,7 @@ Important notes:
 * The `--include-reviews` only grabs reviews from users that had contributions on the previous step.
 * In the `--blacklist` option, 'foo' blacklists both the 'foo' user and 'foo' repo, while 'user:foo' blacklists only the user and 'repo:foo' only the repository.
 * The `--since` option accepts all the regular time.Durations Go accepts, plus a few more: 1y (365d), 1mo (30d), 1w (7d) and 1d (24h).
-
+* The `--token` token permissions need to include 'repo - Full control of private repositories'.
 ```
 org-stats [flags]
 ```
