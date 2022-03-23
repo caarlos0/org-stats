@@ -21,6 +21,6 @@ snapcrafts:
     license: MIT
     apps:
       org-stats:
-        plugs: ["home", "network", "personal-files"]
+        plugs: ["home", "network"]
 
 
