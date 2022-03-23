@@ -1,5 +1,5 @@
 variables:
-  description: Get the contributor stats summary from all repos of any given organization
+  description: Get the contributor stats summary from all repositories of any given organization
   homepage: https://github.com/caarlos0/org-stats
 
 includes:
@@ -15,7 +15,11 @@ furies:
 
 snapcrafts:
   - publish: true
-    summary: '{{ .description }}'
-    description: '{{ .description }}'
+    summary: 'Get the contributor stats summary from all repositories of any given organization'
+    description: 'Get the contributor stats summary from all repositories of any given organization'
     grade: stable
+    apps:
+      org-stats:
+        plugs: ["home", "network", "personal-files"]
+
 

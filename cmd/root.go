@@ -88,10 +88,10 @@ Important notes:
 
 		var csv io.Writer = io.Discard
 		if csvPath != "" {
-			if err := os.MkdirAll(filepath.Dir(csvPath), 0755); err != nil {
+			if err := os.MkdirAll(filepath.Dir(csvPath), 0o755); err != nil {
 				return fmt.Errorf("failed to create csv file: %w", err)
 			}
-			f, err := os.OpenFile(csvPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+			f, err := os.OpenFile(csvPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o644)
 			if err != nil {
 				return fmt.Errorf("failed to create csv file: %w", err)
 			}
@@ -99,7 +99,7 @@ Important notes:
 			csv = f
 		}
 
-		f, err := tea.LogToFile("org-stats.log", "org-stats")
+		f, err := tea.LogToFile(filepath.Join(os.TempDir(), "org-stats.log"), "org-stats")
 		if err != nil {
 			return err
 		}
