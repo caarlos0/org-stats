@@ -15,9 +15,10 @@ furies:
 
 snapcrafts:
   - publish: true
-    summary: 'Get the contributor stats summary from all repositories of any given organization'
+    summary: 'GitHub Organization Stats'
     description: 'Get the contributor stats summary from all repositories of any given organization'
     grade: stable
+    license: MIT
     apps:
       org-stats:
         plugs: ["home", "network", "personal-files"]
