@@ -9,7 +9,7 @@ require (
 	github.com/matryer/is v1.4.0
 	github.com/muesli/mango-cobra v1.0.1-0.20220310171203-3b9e83f70431
 	github.com/muesli/roff v0.1.0
-	github.com/spf13/cobra v1.6.0
+	github.com/spf13/cobra v1.6.1
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
 )
 
