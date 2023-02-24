@@ -10,7 +10,7 @@ require (
 	github.com/muesli/mango-cobra v1.0.1-0.20220310171203-3b9e83f70431
 	github.com/muesli/roff v0.1.0
 	github.com/spf13/cobra v1.6.1
-	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
+	golang.org/x/oauth2 v0.5.0
 )
 
 require (
@@ -41,7 +41,7 @@ require (
 	golang.org/x/term v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/protobuf v1.27.1 // indirect
+	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
