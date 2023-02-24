@@ -7,7 +7,7 @@ require (
 	github.com/charmbracelet/lipgloss v0.6.0
 	github.com/google/go-github/v39 v39.2.0
 	github.com/matryer/is v1.4.0
-	github.com/muesli/mango-cobra v1.0.1-0.20220310171203-3b9e83f70431
+	github.com/muesli/mango-cobra v1.2.0
 	github.com/muesli/roff v0.1.0
 	github.com/spf13/cobra v1.6.1
 	golang.org/x/oauth2 v0.5.0
