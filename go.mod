@@ -4,7 +4,7 @@ require (
 	github.com/caarlos0/duration v0.0.0-20210713014422-2153d649c037
 	github.com/charmbracelet/bubbles v0.15.0
 	github.com/charmbracelet/bubbletea v0.23.2
-	github.com/charmbracelet/lipgloss v0.7.0
+	github.com/charmbracelet/lipgloss v0.7.1
 	github.com/google/go-github/v39 v39.2.0
 	github.com/matryer/is v1.4.1
 	github.com/muesli/mango-cobra v1.2.0
@@ -30,7 +30,7 @@ require (
 	github.com/muesli/mango v0.1.0 // indirect
 	github.com/muesli/mango-pflag v0.1.0 // indirect
 	github.com/muesli/reflow v0.3.0 // indirect
-	github.com/muesli/termenv v0.15.0 // indirect
+	github.com/muesli/termenv v0.15.1 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
