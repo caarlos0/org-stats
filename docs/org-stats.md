@@ -32,6 +32,7 @@ org-stats [flags]
       --github-url string   custom github base url (if using github enterprise)
   -h, --help                help for org-stats
       --include-reviews     include pull request reviews in the stats
+      --exclude-forks       exclude forked repositories from the stats
   -o, --org string          github organization to scan
       --since string        time to look back to gather info (0s means everything) (default "0s")
       --token string        github api token (default $GITHUB_TOKEN)
