@@ -65,6 +65,7 @@ Finally, it prints a rank by each category.
 
 
 Important notes:
+* GitHub's API rate limits for unauthenticated requests have been lowered significantly in the recent past. Using the ` + "`--token`" + ` option for compiling stats will speed up gathering of data considerably, since for authenticated requests it will be less likely that rate-limiting timelocks have to be awaited.
 * The ` + "`--since`" + ` filter does not work "that well" because GitHub summarizes thedata by week, so the data is not as granular as it should be.
 * The ` + "`--include-reviews`" + ` only grabs reviews from users that had contributions on the previous step.
 * In the ` + "`--blacklist`" + ` option, 'foo' blacklists both the 'foo' user and 'foo' repo, while 'user:foo' blacklists only the user and 'repo:foo' only the repository.
