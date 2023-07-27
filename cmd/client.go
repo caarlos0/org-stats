@@ -11,7 +11,11 @@ func newClient(ctx context.Context, token, baseURL string) (*github.Client, erro
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 
 	if baseURL == "" {
-		return github.NewClient(oauth2.NewClient(ctx, ts)), nil
+		if token == "" {
+			return github.NewClient(nil), nil
+		} else {
+			return github.NewClient(oauth2.NewClient(ctx, ts)), nil
+		}
 	}
 
 	return github.NewEnterpriseClient(baseURL, "", oauth2.NewClient(ctx, ts))
