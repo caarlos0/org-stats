@@ -25,6 +25,7 @@ func NewInitialModel(
 	since time.Time,
 	top int,
 	includeReviewStats bool,
+	excludeForks bool,
 	csv io.Writer,
 ) InitialModel {
 	var s = spinner.NewModel()
@@ -38,6 +39,7 @@ func NewInitialModel(
 		repoBlacklist:      repoBlacklist,
 		since:              since,
 		includeReviewStats: includeReviewStats,
+		excludeForks:       excludeForks,
 		top:                top,
 		spinner:            s,
 		csv:                csv,
@@ -58,6 +60,7 @@ type InitialModel struct {
 	repoBlacklist      []string
 	since              time.Time
 	includeReviewStats bool
+	excludeForks       bool
 	top                int
 	csv                io.Writer
 }
@@ -71,6 +74,7 @@ func (m InitialModel) Init() tea.Cmd {
 			m.repoBlacklist,
 			m.since,
 			m.includeReviewStats,
+			m.excludeForks,
 		),
 		spinner.Tick,
 	)
@@ -124,6 +128,7 @@ func getStats(
 	userBlacklist, repoBlacklist []string,
 	since time.Time,
 	includeReviews bool,
+	excludeForks bool,
 ) tea.Cmd {
 	return func() tea.Msg {
 		stats, err := orgstats.Gather(
@@ -134,6 +139,7 @@ func getStats(
 			repoBlacklist,
 			since,
 			includeReviews,
+			excludeForks,
 		)
 		if err != nil {
 			return errMsg{err}

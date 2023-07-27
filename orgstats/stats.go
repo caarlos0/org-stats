@@ -49,6 +49,7 @@ func Gather(
 	userBlacklist, repoBlacklist []string,
 	since time.Time,
 	includeReviewStats bool,
+	excludeForks bool,
 ) (Stats, error) {
 
 	allStats := NewStats(since)
@@ -58,6 +59,7 @@ func Gather(
 		org,
 		userBlacklist,
 		repoBlacklist,
+		excludeForks,
 		&allStats,
 	); err != nil {
 		return Stats{}, err
@@ -134,6 +136,7 @@ func gatherLineStats(
 	client *github.Client,
 	org string,
 	userBlacklist, repoBlacklist []string,
+	excludeForks bool,
 	allStats *Stats,
 ) error {
 	allRepos, err := repos(ctx, client, org)
@@ -142,6 +145,10 @@ func gatherLineStats(
 	}
 
 	for _, repo := range allRepos {
+		if excludeForks && *repo.Fork {
+			log.Println("ignoring forked repo:", repo.GetName())
+			continue
+		}
 		if isBlacklisted(repoBlacklist, repo.GetName()) {
 			log.Println("ignoring blacklisted repo:", repo.GetName())
 			continue

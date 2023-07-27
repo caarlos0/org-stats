@@ -23,6 +23,7 @@ var (
 	blacklist      []string
 	top            int
 	includeReviews bool
+	excludeForks   bool
 )
 
 func Execute() {
@@ -44,6 +45,7 @@ func init() {
 	rootCmd.Flags().StringVar(&githubURL, "github-url", "", "custom github base url (if using github enterprise)")
 	rootCmd.Flags().StringVar(&since, "since", "0s", "time to look back to gather info (0s means everything)")
 	rootCmd.Flags().BoolVar(&includeReviews, "include-reviews", false, "include pull request reviews in the stats")
+	rootCmd.Flags().BoolVar(&excludeForks, "exclude-forks", false, "exclude forked repositories from the stats")
 	rootCmd.Flags().StringVar(&csvPath, "csv-path", "", "path to write a csv file with all data collected")
 
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
@@ -120,6 +122,7 @@ Important notes:
 			sinceT,
 			top,
 			includeReviews,
+			excludeForks,
 			csv,
 		))
 		return p.Start()
