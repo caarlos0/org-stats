@@ -7,6 +7,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/caarlos0/org-stats/github_errors"
+
 	"github.com/google/go-github/v39/github"
 )
 
@@ -72,6 +74,7 @@ func Gather(
 	}
 
 	for user := range allStats.data {
+		log.Println("gathering review stats for user:", user)
 		if err := gatherReviewStats(
 			ctx,
 			client,
@@ -101,6 +104,7 @@ func gatherReviewStats(
 	// review:approved, review:changes_requested
 	reviewed, err := search(ctx, client, fmt.Sprintf("user:%s is:pr reviewed-by:%s created:>%s", org, user, ts))
 	if err != nil {
+		log.Println("failed to gather review stats for user: ", user, "error: ", err)
 		return err
 	}
 	allStats.addReviewStats(user, reviewed)
@@ -113,13 +117,17 @@ func search(
 	query string,
 ) (int, error) {
 	log.Printf("searching '%s'", query)
-	result, _, err := client.Search.Issues(ctx, query, &github.SearchOptions{
+	result, resp, err := client.Search.Issues(ctx, query, &github.SearchOptions{
 		ListOptions: github.ListOptions{
 			PerPage: 1,
 		},
 	})
 	if rateErr, ok := err.(*github.RateLimitError); ok {
 		handleRateLimit(rateErr)
+		return search(ctx, client, query)
+	}
+	if isSecondRateErr, secondRateErr := githuberrors.IsSecondaryRateLimitError(resp); isSecondRateErr {
+		handleSecondaryRateLimit(secondRateErr)
 		return search(ctx, client, query)
 	}
 	if _, ok := err.(*github.AcceptedError); ok {
@@ -221,6 +229,10 @@ func repos(ctx context.Context, client *github.Client, org string) ([]*github.Re
 			handleRateLimit(rateErr)
 			continue
 		}
+		if isSecondRateErr, secondRateErr := githuberrors.IsSecondaryRateLimitError(resp); isSecondRateErr {
+			handleSecondaryRateLimit(secondRateErr)
+			continue
+		}
 		if err != nil {
 			return allRepos, err
 		}
@@ -236,10 +248,14 @@ func repos(ctx context.Context, client *github.Client, org string) ([]*github.Re
 }
 
 func getStats(ctx context.Context, client *github.Client, org, repo string) ([]*github.ContributorStats, error) {
-	stats, _, err := client.Repositories.ListContributorsStats(ctx, org, repo)
+	stats, resp, err := client.Repositories.ListContributorsStats(ctx, org, repo)
 	if err != nil {
 		if rateErr, ok := err.(*github.RateLimitError); ok {
 			handleRateLimit(rateErr)
+			return getStats(ctx, client, org, repo)
+		}
+		if isSecondRateErr, secondRateErr := githuberrors.IsSecondaryRateLimitError(resp); isSecondRateErr {
+			handleSecondaryRateLimit(secondRateErr)
 			return getStats(ctx, client, org, repo)
 		}
 		if _, ok := err.(*github.AcceptedError); ok {
@@ -255,5 +271,14 @@ func handleRateLimit(err *github.RateLimitError) {
 		s = 5 * time.Second
 	}
 	log.Printf("hit rate limit, waiting %v", s)
+	time.Sleep(s)
+}
+
+func handleSecondaryRateLimit(err *githuberrors.SecondaryRateLimitError) {
+	s := err.RetryAfter.UTC().Sub(time.Now().UTC())
+	if s < 0 {
+		s = 10 * time.Second
+	}
+	log.Printf("hit secondary rate limit, waiting %v", s)
 	time.Sleep(s)
 }
