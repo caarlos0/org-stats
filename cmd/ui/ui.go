@@ -28,7 +28,7 @@ func NewInitialModel(
 	excludeForks bool,
 	csv io.Writer,
 ) InitialModel {
-	var s = spinner.NewModel()
+	s := spinner.New()
 	s.Spinner = spinner.MiniDot
 	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
 
@@ -76,7 +76,7 @@ func (m InitialModel) Init() tea.Cmd {
 			m.includeReviewStats,
 			m.excludeForks,
 		),
-		spinner.Tick,
+		m.spinner.Tick,
 	)
 }
 

@@ -35,10 +35,10 @@ func Execute() {
 
 func init() {
 	rootCmd.Flags().StringVar(&token, "token", "", "github api token (default $GITHUB_TOKEN)")
-	rootCmd.MarkFlagRequired(token)
+	_ = rootCmd.MarkFlagRequired(token)
 
 	rootCmd.Flags().StringVarP(&organization, "org", "o", "", "github organization to scan")
-	rootCmd.MarkFlagRequired("org")
+	_ = rootCmd.MarkFlagRequired("org")
 
 	rootCmd.Flags().StringSliceVarP(&blacklist, "blacklist", "b", []string{}, "blacklist repos and/or users")
 	rootCmd.Flags().IntVar(&top, "top", 3, "how many users to show")
@@ -72,12 +72,12 @@ Important notes:
 * The ` + "`--since`" + ` option accepts all the regular time. Accepts any duration Go standard library accepts, plus a few more: 1y (365d), 1mo (30d), 1w (7d) and 1d (24h).
 * The ` + "`--token`" + ` token permissions need to include 'repo - Full control of private repositories'. Required only if you need to fetch data from private repositories in your organization.
 }`,
-	PreRun: func(cmd *cobra.Command, args []string) {
+	PreRun: func(*cobra.Command, []string) {
 		if token == "" {
 			token = os.Getenv("GITHUB_TOKEN")
 		}
 	},
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(*cobra.Command, []string) error {
 		ctx := context.Background()
 		client, err := newClient(ctx, token, githubURL)
 		if err != nil {
@@ -91,7 +91,7 @@ Important notes:
 
 		userBlacklist, repoBlacklist := buildBlacklists(blacklist)
 
-		var csv io.Writer = io.Discard
+		csv := io.Discard
 		if csvPath != "" {
 			if err := os.MkdirAll(filepath.Dir(csvPath), 0o755); err != nil {
 				return fmt.Errorf("failed to create csv file: %w", err)
@@ -126,6 +126,7 @@ Important notes:
 			excludeForks,
 			csv,
 		))
-		return p.Start()
+		_, err = p.Run()
+		return err
 	},
 }
