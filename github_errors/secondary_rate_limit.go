@@ -26,9 +26,10 @@ func IsSecondaryRateLimitError(r *github.Response) (bool, *SecondaryRateLimitErr
 	var body *SecondaryRateLimitBody
 	res := r.Response
 
-	if isRateLimit, b := isSecondaryRateLimit(res); !isRateLimit {
+	isRateLimit, b := isSecondaryRateLimit(res)
+	if !isRateLimit {
 		return false, nil
-	} 
+	}
 	body = b
 
 	retryAfter := parseSecondaryLimitTime(res)
