@@ -3,35 +3,26 @@ name: goreleaser
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 jobs:
   goreleaser:
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      -
-        name: Set up Go
-        uses: actions/setup-go@v2
+      - uses: actions/setup-go@v2
         with:
-          go-version: ~1.18
-      -
-        name: Set up Snapcraft
-        run: |
+          go-version: stable
+      - run: |
           sudo apt-get update
           sudo apt-get -yq --no-install-suggests --no-install-recommends install snapcraft
           mkdir -p $HOME/.cache/snapcraft/download
           mkdir -p $HOME/.cache/snapcraft/stage-packages
           snapcraft login --with <(echo "${{ secrets.SNAPCRAFT_LOGIN }}")
-      -
-        name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
-        if: success() && startsWith(github.ref, 'refs/tags/')
+      - uses: goreleaser/goreleaser-action@v2
+        if: success()
         with:
           distribution: goreleaser-pro
           version: latest
@@ -40,8 +31,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           FURY_TOKEN: ${{ secrets.FURY_TOKEN }}
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-          TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
-          TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
-          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
-          TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
           AUR_KEY: ${{ secrets.AUR_KEY }}
