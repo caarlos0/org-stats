@@ -21,7 +21,7 @@ jobs:
           mkdir -p $HOME/.cache/snapcraft/download
           mkdir -p $HOME/.cache/snapcraft/stage-packages
           snapcraft login --with <(echo "${{ secrets.SNAPCRAFT_LOGIN }}")
-      - uses: goreleaser/goreleaser-action@v5
+      - uses: goreleaser/goreleaser-action@v6
         if: success()
         with:
           distribution: goreleaser-pro
