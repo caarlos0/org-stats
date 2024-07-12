@@ -21,6 +21,7 @@ snapcrafts:
     description: "Get the contributor stats summary from all repositories of any given organization"
     grade: stable
     license: MIT
+    confinement: strict
     apps:
       org-stats:
         command: org-stats
