@@ -16,9 +16,13 @@ jobs:
         with:
           go-version: stable
       - name: setup-snapcraft
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_LOGIN }}
         run: |
           sudo apt-get update
           sudo apt-get -yq --no-install-suggests --no-install-recommends install snapcraft
+          snapcraft --version
+          snapcraft whoami
       - uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser-pro
